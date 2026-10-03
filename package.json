@@ -1,0 +1,26 @@
+{
+  "name": "delayed-reaction",
+  "private": true,
+  "description": "Watch the game late with your friends. Reactions pinned to the game clock, never the wall clock.",
+  "license": "MIT",
+  "packageManager": "yarn@4.5.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "services/*"
+  ],
+  "scripts": {
+    "dev:api": "yarn workspace @delayed-reaction/api dev",
+    "dev:web": "yarn workspace @delayed-reaction/web dev",
+    "dev:tv": "yarn workspace @delayed-reaction/tv-web dev",
+    "test": "yarn workspaces foreach -Apt --exclude @delayed-reaction/vega run test",
+    "typecheck": "yarn workspaces foreach -Apt --exclude @delayed-reaction/vega run typecheck",
+    "build": "yarn workspaces foreach -Apt --exclude @delayed-reaction/vega run build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "typescript": "~5.6.3"
+  }
+}

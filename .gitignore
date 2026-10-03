@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+.pnp.*
+
+# builds
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+*.vpkg
+buildinfo.json
+
+# env
+.env
+.env.*
+!.env.example
+
+# tooling
+.DS_Store
+coverage/
+.turbo/
+*.log
+.vercel/
+.aws-sam/
+cdk.out/
