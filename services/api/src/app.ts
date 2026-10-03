@@ -73,6 +73,12 @@ export function createApp(options: AppOptions) {
     return c.json(await service.sync(authed, await c.req.json()));
   });
 
+  v1.get('/rooms/:code/recap', async (c) => {
+    const authed = await service.authenticate(roomCode(c), c.req.header('Authorization'));
+    limit(syncLimit, authed.viewer.id);
+    return c.json(await service.recap(authed));
+  });
+
   v1.post('/rooms/:code/reactions', async (c) => {
     const authed = await service.authenticate(roomCode(c), c.req.header('Authorization'));
     limit(reactionLimit, authed.viewer.id);

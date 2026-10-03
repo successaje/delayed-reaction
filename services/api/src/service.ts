@@ -1,6 +1,9 @@
 import {
   addMs,
+  buildRecap,
   clampUntil,
+  PRE_MATCH,
+  type Recap,
   generateRoomCode,
   PREFETCH_MS,
   sortKey,
@@ -180,6 +183,21 @@ export class RoomService {
       serverTime: now,
     };
     return page;
+  }
+
+  /**
+   * The loudest moments so far, for this viewer: built only from reactions at or before the
+   * viewer's last reported position, so a recap can't spoil anything.
+   */
+  async recap({ room, viewer }: AuthedViewer): Promise<Recap> {
+    const fresh = await this.deps.store.getViewer(room.code, viewer.id);
+    const until = fresh?.report?.position ?? PRE_MATCH;
+    const { reactions } = await this.deps.store.queryReactions(room.code, {
+      afterKey: null,
+      untilKey: sortKey(until),
+      afterSeq: 0,
+    });
+    return buildRecap(reactions.map(toReactionDto), until);
   }
 
   async postReaction(

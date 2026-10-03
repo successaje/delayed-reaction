@@ -106,3 +106,30 @@ describe('reactions and sync', () => {
     expect(page.body.reactions).toEqual([]);
   });
 });
+
+describe('recap', () => {
+  it('summarises only what the viewer has reached', async () => {
+    const h = harness();
+    const ada = await h.createRoom('Ada');
+    const tunde = (await h.join(ada.room.code, 'Tunde')).body;
+    const code = ada.room.code;
+    const react = (token: string, ms: number) =>
+      h.call(
+        'POST',
+        `/v1/rooms/${code}/reactions`,
+        { id: reactionId(), position: { period: 1, ms }, body: { kind: 'quick', value: 'no' } },
+        token,
+      );
+    await react(ada.token, 61_000);
+    await react(tunde.token, 70_000);
+    await react(ada.token, 900_000);
+
+    // Tunde has only reached 1H 02:00.
+    await h.call('POST', `/v1/rooms/${code}/sync`, { position: { period: 1, ms: 120_000 }, playing: false }, tunde.token);
+    const recap = await h.call('GET', `/v1/rooms/${code}/recap`, undefined, tunde.token);
+    expect(recap.status).toBe(200);
+    expect(recap.body.total).toBe(2);
+    expect(recap.body.moments[0].people).toBe(2);
+    expect(JSON.stringify(recap.body)).not.toContain('900000');
+  });
+});
