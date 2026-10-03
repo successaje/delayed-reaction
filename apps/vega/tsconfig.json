@@ -1,0 +1,32 @@
+{
+  "extends": "@tsconfig/react-native/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "moduleSuffixes": [
+      ".vega",
+      ""
+    ],
+    "types": [
+      "@amazon-devices/react-native-kepler"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@amazon-devices/*": [
+        "./node_modules/@amazon-devices/*"
+      ],
+      "react": [
+        "./node_modules/@types/react"
+      ],
+      "react-native": [
+        "./node_modules/react-native"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "../../packages/tv-ui/src/**/*.vega.ts",
+    "../../packages/tv-ui/src/**/*.vega.tsx"
+  ]
+}
