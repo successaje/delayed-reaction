@@ -73,3 +73,18 @@ id = "com.amazon.gipc.uuid.*"
 
 [[offers.interaction]]
 id = "com.successaje.delayedreaction.main"
+
+# ------------------------------------------------------------------------------
+# Vega Media Controls: remote media keys, the system UI and Alexa transport
+# commands reach the player through IMediaPlaybackServer.
+# ------------------------------------------------------------------------------
+[[extras]]
+key = "interface.provider"
+component-id = "com.successaje.delayedreaction.main"
+
+[extras.value.application]
+[[extras.value.application.interface]]
+interface_name = "com.amazon.kepler.media.IMediaPlaybackServer"
+command_options = ["Play", "Pause", "StartOver", "SkipForward", "SkipBackward"]
+attribute_options = ["AudioAdvanceMuted"]
+features = ["AdvancedSeek"]

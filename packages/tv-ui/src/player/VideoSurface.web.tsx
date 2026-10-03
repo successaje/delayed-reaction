@@ -4,6 +4,7 @@ import type { MediaController, VideoSurfaceProps } from './types';
 
 /** Browser build: a plain <video> element inside the React Native Web tree. */
 export function VideoSurface({ uri, posterUri, onController, onStatus }: VideoSurfaceProps) {
+  // Browsers have no system media session wired up here; kickoffMs and onExternalCommand are Vega-only.
   const ref = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {

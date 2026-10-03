@@ -50,6 +50,7 @@ More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PRODUCT.md](
 |---|---|---|
 | **Vega OS** (React Native for Fire TV) | `apps/vega`, `packages/tv-ui` | The TV app. Platform code in `*.vega.tsx`, bundled by Metro for `kepler` |
 | **W3C Media** (`@amazon-devices/react-native-w3cmedia`) | `packages/tv-ui/src/player/VideoSurface.vega.tsx` | `VideoPlayer` + `KeplerVideoSurfaceView`. Its `currentTime` drives the match clock |
+| **Vega Media Controls** (`KeplerMediaControlHandler`, `IMediaPlaybackServer`) | `packages/tv-ui/src/player/media-controls.vega.ts` | Remote media keys, the system UI and Alexa transport commands drive the same player the match clock reads; "start over" returns to kick-off |
 | **Vega remote input** (`TVEventHandler`) | `packages/tv-ui/src/remote/source.vega.ts` | D-pad, select, back and play/pause, routed into spatial focus navigation |
 | **AsyncStorage for Vega** | `apps/vega/src/App.tsx` | Remembers rooms on the TV |
 | **AWS Lambda + API Gateway (HTTP API)** | `services/api/src/lambda.ts`, `infra/` | The API |
