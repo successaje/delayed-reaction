@@ -31,3 +31,6 @@ cdk.out/
 # generated demo media (scripts/fetch-demo-media.sh)
 apps/web/public/media/
 next-env.d.ts
+
+# AWS
+infra/cdk.out/

@@ -1,0 +1,24 @@
+{
+  "name": "@delayed-reaction/infra",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AWS CDK stack: DynamoDB, Lambda + HTTP API, and S3 + CloudFront for match media.",
+  "scripts": {
+    "synth": "cdk synth",
+    "deploy": "yarn workspace @delayed-reaction/api build && cdk deploy --require-approval never",
+    "diff": "cdk diff",
+    "destroy": "cdk destroy",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"infra: verified by cdk synth\""
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.272.0",
+    "constructs": "^10.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "aws-cdk": "^2.1030.0",
+    "tsx": "^4.19.2",
+    "typescript": "~5.6.3"
+  }
+}
