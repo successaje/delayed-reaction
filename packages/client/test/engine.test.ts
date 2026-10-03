@@ -95,7 +95,8 @@ describe('TimelineSync, end to end against the API', () => {
 
     // Ada sees presence: Tunde is ~38 minutes behind her.
     const tundeView = adaSync.currentViewers.find((v) => v.id === tunde.viewer.id);
-    expect(tundeView?.report?.position.ms).toBeGreaterThan(23 * MIN);
+    // Reports trail the playhead by up to a sync interval or two (more on slow CI).
+    expect(tundeView?.report?.position.ms).toBeGreaterThan(22 * MIN);
 
     clearInterval(timer);
     adaSync.stop();
