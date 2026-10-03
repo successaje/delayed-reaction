@@ -2,17 +2,22 @@ import {
   KeplerVideoSurfaceView,
   VideoPlayer,
 } from '@amazon-devices/react-native-w3cmedia';
+import { useKeplerAppStateManager } from '@amazon-devices/react-native-kepler';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { MatchMediaControls } from './media-controls.vega';
 import type { MediaController, VideoSurfaceProps } from './types';
 
 /**
  * Vega build: Amazon's W3C media pipeline. The player is created and loaded first; the native
  * surface is attached once metadata arrives, following the vega-video-sample lifecycle.
  */
-export function VideoSurface({ uri, onController, onStatus }: VideoSurfaceProps) {
+export function VideoSurface({ uri, kickoffMs, onController, onStatus, onExternalCommand }: VideoSurfaceProps) {
   const playerRef = useRef<VideoPlayer | null>(null);
   const [initialized, setInitialized] = useState(false);
+  const componentInstance = useKeplerAppStateManager().getComponentInstance();
+  const commandRef = useRef(onExternalCommand);
+  commandRef.current = onExternalCommand;
 
   useEffect(() => {
     let disposed = false;
@@ -31,6 +36,14 @@ export function VideoSurface({ uri, onController, onStatus }: VideoSurfaceProps)
     on('seeked', () => onStatus('ready'));
     on('ended', () => onStatus('ended'));
     on('error', () => onStatus('error'));
+
+    // Take media-control focus so remote media keys, the system UI and Alexa drive this player.
+    player
+      .setMediaControlFocus(
+        componentInstance,
+        new MatchMediaControls(player, kickoffMs, () => commandRef.current?.()),
+      )
+      .catch(() => undefined);
 
     player
       .initialize()
@@ -68,7 +81,7 @@ export function VideoSurface({ uri, onController, onStatus }: VideoSurfaceProps)
       }
       playerRef.current = null;
     };
-  }, [uri, onController, onStatus]);
+  }, [uri, kickoffMs, componentInstance, onController, onStatus]);
 
   return (
     <View style={StyleSheet.absoluteFill}>
