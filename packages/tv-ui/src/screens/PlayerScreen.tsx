@@ -161,6 +161,12 @@ export function PlayerScreen({
     }
   }, media !== 'error');
 
+  // Alexa or the system UI moved the player: show controls and sync straight away.
+  const onExternalCommand = useCallback(() => {
+    poke();
+    engine.syncSoon();
+  }, [poke, engine]);
+
   const onController = useCallback((controller: MediaController | null) => {
     controllerRef.current = controller;
   }, []);
@@ -190,7 +196,14 @@ export function PlayerScreen({
 
   return (
     <View style={styles.root}>
-      <VideoSurface uri={program.mediaUrl} posterUri={program.posterUrl} onController={onController} onStatus={setMedia} />
+      <VideoSurface
+        uri={program.mediaUrl}
+        posterUri={program.posterUrl}
+        kickoffMs={program.markers[0]?.mediaMs ?? 0}
+        onController={onController}
+        onStatus={setMedia}
+        onExternalCommand={onExternalCommand}
+      />
 
       <View style={[styles.top, media === 'ended' && { opacity: 0 }]} pointerEvents="none">
         <Scorebug
