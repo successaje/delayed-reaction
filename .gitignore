@@ -27,3 +27,6 @@ coverage/
 .vercel/
 .aws-sam/
 cdk.out/
+
+# generated demo media (scripts/fetch-demo-media.sh)
+apps/web/public/media/
