@@ -1,0 +1,75 @@
+# Delayed Reaction for Fire TV (Vega OS).
+schema-version = 1
+
+[package]
+title = "Delayed Reaction"
+version = "0.1.0"
+id = "com.successaje.delayedreaction"
+
+[components]
+[[components.interactive]]
+id = "com.successaje.delayedreaction.main"
+runtime-module = "/com.amazon.kepler.keplerscript.runtime.loader_2@IKeplerScript_2_0"
+launch-type = "singleton"
+categories = ["com.amazon.category.main", "com.amazon.category.kepler.media"]
+
+[processes]
+[[processes.group]]
+component-ids = ["com.successaje.delayedreaction.main"]
+
+[wants]
+# Remote and keyboard input.
+[[wants.service]]
+id = "com.amazon.inputmethod.service"
+
+[[wants.service]]
+id = "com.amazon.inputd.service"
+
+# W3C media playback.
+[[wants.service]]
+id = "com.amazon.media.server"
+
+[[wants.service]]
+id = "com.amazon.mediametrics.service"
+
+[[wants.service]]
+id = "com.amazon.media.playersession.service"
+
+[[wants.service]]
+id = "com.amazon.mediabuffer.service"
+
+[[wants.service]]
+id = "com.amazon.mediatransform.service"
+
+[[wants.service]]
+id = "com.amazon.gipc.uuid.*"
+
+[[wants.service]]
+id = "com.amazon.audio.stream"
+
+[[wants.service]]
+id = "com.amazon.audio.control"
+
+[[wants.service]]
+id = "com.amazon.audio.system"
+
+# Network status for reconnect handling.
+[[wants.service]]
+id = "com.amazon.network.service"
+
+[[wants.privilege]]
+id = "com.amazon.devconf.privilege.accessibility"
+
+[needs]
+[[needs.privilege]]
+id = "com.amazon.media.secureplayback"
+
+[[needs.privilege]]
+id = "com.amazon.network.privilege.net-info"
+
+[offers]
+[[offers.service]]
+id = "com.amazon.gipc.uuid.*"
+
+[[offers.interaction]]
+id = "com.successaje.delayedreaction.main"

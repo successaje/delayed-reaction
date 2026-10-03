@@ -1,0 +1,5 @@
+{
+  "//": "The app name must match the interactive component id in manifest.toml.",
+  "name": "com.successaje.delayedreaction.main",
+  "displayName": "Delayed Reaction"
+}
