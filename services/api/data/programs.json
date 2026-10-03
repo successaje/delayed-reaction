@@ -1,0 +1,17 @@
+[
+  {
+    "id": "beach-final-2021",
+    "title": "RFU v Japan",
+    "subtitle": "FIFA Beach Soccer World Cup 2021 · Final · from the stands",
+    "sport": "football",
+    "mediaUrl": "beach-final-2021.mp4",
+    "posterUrl": "beach-final-2021.jpg",
+    "durationMs": 135029,
+    "markers": [{ "period": 1, "mediaMs": 0 }],
+    "credit": {
+      "author": "Voltmetro",
+      "license": "CC0",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:2021_FIFA_Beach_Soccer_World_Cup_Final"
+    }
+  }
+]
