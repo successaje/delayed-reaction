@@ -21,14 +21,16 @@ delayed-reaction/
  ───────────                         ───                             ────────────────────
  tap "NOOO" at 1H 23:14  ──POST──▶  reactions sorted by position
                                      (period, ms)
-                                                        ◀──GET reactions?after=cursor&until=1H 23:19──
+                                                        ◀──POST sync {position: 1H 23:14, cursor}──
                                      until ≤ reported position + 5 s
                                                         ──────────────▶  queue → shown when playhead
                                                                           crosses 1H 23:14
 ```
 
-1. **Clocks report positions.** Every viewer sends a heartbeat with its current match position and play state (every 2 s while playing, and on every pause, seek or period change).
-2. **Pull, gated.** Clients pull reactions in the window `(cursor, position + prefetch]`. The API clamps `until` to the viewer's last reported position plus the prefetch window, so a client can't over-fetch by accident. The window is 5 s and covers network jitter.
+1. **One request per tick.** Every viewer calls `POST /v1/rooms/:code/sync` with its match position, play state and cursor: about every 1.5 s while playing, and immediately on pause, seek or period change. The same call records presence and pulls reactions.
+2. **Pull, gated.** The API serves reactions up to `position + 5 s` (`clampUntil` in `core`). The 5-second prefetch absorbs network jitter. The cursor carries two parts:
+   - a position key: what has been served by match position;
+   - a sequence number: what has been seen by insertion order, so reactions posted *behind* the viewer (replies from friends watching later) still arrive.
 3. **Display at the moment.** `TimelineSync` holds the prefetched reactions and releases each one when the local playhead crosses it. Seeking backwards replays from the cache. Seeking forward files the skipped reactions into history without a burst.
 4. **Presence.** Viewer positions come back with every pull, so each client can show "Ada · 38 min ahead" without receiving any of Ada's content.
 
@@ -65,3 +67,17 @@ The TV UI resolves platform files at bundle time:
 - `*.web.tsx` for the react-native-web build.
 
 The video player is the only significant fork: W3C media on Vega, and `<video>` on web.
+
+## HTTP API
+
+| Method | Path | Auth | Purpose |
+|---|---|---|---|
+| GET | `/v1/programs` | none | The catalog of broadcasts with known period markers |
+| POST | `/v1/rooms` | none | Create a room. Returns the host session (room, viewer and token) |
+| GET | `/v1/rooms/:code` | none | Room and presence, for the join screen |
+| POST | `/v1/rooms/:code/viewers` | none | Join. Returns a session |
+| GET | `/v1/rooms/:code/me` | bearer | Restore a session on a returning device |
+| POST | `/v1/rooms/:code/sync` | bearer | Report position, then pull gated reactions and presence |
+| POST | `/v1/rooms/:code/reactions` | bearer | Post a reaction. Idempotent on the client-generated id |
+
+Errors are `{ error: { code, message } }`. The `message` is written for the person using the app.
