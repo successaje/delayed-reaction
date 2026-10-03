@@ -50,9 +50,15 @@ export const joinRoomRequestSchema = z.object({
   deviceLabel: z.string().max(32).optional(),
 });
 
-export const heartbeatRequestSchema = z.object({
+/**
+ * One request per tick: reports where the viewer is (so presence and the spoiler gate stay
+ * current) and pulls any reactions now within reach.
+ */
+export const syncRequestSchema = z.object({
   position: matchPositionSchema,
   playing: z.boolean(),
+  /** Opaque cursor from the previous page; omit to fetch everything within reach. */
+  cursor: z.string().max(200).optional(),
 });
 
 export const postReactionRequestSchema = z.object({
@@ -73,8 +79,29 @@ export const postReactionRequestSchema = z.object({
 
 export type CreateRoomRequest = z.input<typeof createRoomRequestSchema>;
 export type JoinRoomRequest = z.input<typeof joinRoomRequestSchema>;
-export type HeartbeatRequest = z.input<typeof heartbeatRequestSchema>;
+export type SyncRequest = z.input<typeof syncRequestSchema>;
 export type PostReactionRequest = z.input<typeof postReactionRequestSchema>;
+
+/** A broadcast in the catalog, with the media times at which each period starts. */
+export const programSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]{1,64}$/),
+  title: z.string().min(1).max(80),
+  subtitle: z.string().max(120),
+  sport: sportIdSchema,
+  mediaUrl: z.string().min(1),
+  posterUrl: z.string().min(1).nullable(),
+  durationMs: z.number().int().positive(),
+  markers: z
+    .array(z.object({ period: z.number().int().min(1).max(MAX_PERIOD), mediaMs: z.number().int().min(0) }))
+    .min(1),
+  credit: z.object({
+    author: z.string().min(1),
+    license: z.string().min(1),
+    sourceUrl: z.string().url(),
+  }),
+});
+
+export type ProgramDto = z.infer<typeof programSchema>;
 
 // ---- Responses -------------------------------------------------------------------------------
 
