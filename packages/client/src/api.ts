@@ -5,6 +5,7 @@ import type {
   JoinRoomRequest,
   PostReactionRequest,
   ProgramDto,
+  Recap,
   ReactionDto,
   ReactionPageDto,
   RoomStateDto,
@@ -79,6 +80,10 @@ export class ApiClient {
 
   sync(code: string, token: string, body: SyncRequest): Promise<ReactionPageDto> {
     return this.request('POST', `/v1/rooms/${encodeURIComponent(code)}/sync`, { body, token });
+  }
+
+  recap(code: string, token: string): Promise<Recap> {
+    return this.request('GET', `/v1/rooms/${encodeURIComponent(code)}/recap`, { token });
   }
 
   postReaction(
