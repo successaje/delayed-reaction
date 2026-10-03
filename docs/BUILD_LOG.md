@@ -12,11 +12,15 @@
 | 2026-10-03 | Landing page with a live two-screen demo of the core interaction | #7 |
 | 2026-10-03 | AWS: DynamoDB store, Lambda entry, CDK stack (HTTP API, CloudFront media) | #8 |
 | 2026-10-03 | README, friction log, build log | #9 |
+| 2026-10-03 | Recap: loudest moments gated by position; replay from the TV remote | #10 |
+| 2026-10-03 | Vega Media Controls: system and Alexa transport drive the match clock | #11 |
+| 2026-10-03 | TV home how-it-works panel | #12 |
+| 2026-10-03 | Demo video plan and submission draft | #13 |
 
 ## Next
 
 - [ ] Deploy to AWS and Vercel (needs AWS credentials)
 - [ ] Run on the Vega Virtual Device or a Fire TV (needs the Vega SDK)
-- [ ] Vega Media Controls, so remote and Alexa transport commands keep the clock honest
-- [ ] Post-match recap: the group's loudest moments, gated by your position
+- [x] Vega Media Controls
+- [x] Post-match recap
 - [ ] Demo video
