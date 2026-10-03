@@ -163,7 +163,10 @@ describe('TimelineSync, end to end against the API', () => {
     online = false;
     await vi.advanceTimersByTimeAsync(40_000);
     online = true;
-    await vi.advanceTimersByTimeAsync(20_000);
+    // Step through time so real async work (token hashing) keeps pace with the fake clock.
+    for (let i = 0; i < 40 && statuses.at(-1) !== 'live'; i++) {
+      await vi.advanceTimersByTimeAsync(1_000);
+    }
     expect(statuses).toEqual(['live', 'reconnecting', 'offline', 'live']);
     engine.stop();
   });

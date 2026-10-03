@@ -7,7 +7,11 @@ import { z } from 'zod';
  * same catalog works locally (served by the web app) and in production (served by a CDN).
  */
 export function loadPrograms(path: string, mediaBaseUrl: string): ProgramDto[] {
-  const raw: unknown = JSON.parse(readFileSync(path, 'utf8'));
+  return resolvePrograms(JSON.parse(readFileSync(path, 'utf8')), mediaBaseUrl);
+}
+
+/** Validates a catalog and resolves its relative media URLs. */
+export function resolvePrograms(raw: unknown, mediaBaseUrl: string): ProgramDto[] {
   const programs = z.array(programSchema).parse(raw);
   return programs.map((program) => ({
     ...program,
@@ -17,7 +21,8 @@ export function loadPrograms(path: string, mediaBaseUrl: string): ProgramDto[] {
 }
 
 function resolve(url: string, base: string): string {
-  return /^https?:\/\//.test(url) ? url : new URL(url.replace(/^\//, ''), withSlash(base)).href;
+  if (/^https?:\/\//.test(url) || !base) return url;
+  return new URL(url.replace(/^\//, ''), withSlash(base)).href;
 }
 
 function withSlash(base: string): string {

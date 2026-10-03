@@ -2,10 +2,10 @@ import { serve } from '@hono/node-server';
 import { createApp } from './app';
 import { config } from './config';
 import { loadPrograms } from './programs';
-import { MemoryRoomStore } from './store/memory';
+import { storeFromEnv } from './store';
 
 const app = createApp({
-  store: new MemoryRoomStore(),
+  store: storeFromEnv(),
   now: Date.now,
   programs: loadPrograms(config.programsPath, config.mediaBaseUrl),
   corsOrigins: config.corsOrigins,
