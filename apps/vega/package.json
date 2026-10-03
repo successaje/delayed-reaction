@@ -9,7 +9,7 @@
     "build:debug": "react-native build-kepler --build-type Debug",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf build buildinfo.json dist",
-    "bundle": "react-native bundle --entry-file index.js --platform kepler --dev false --bundle-output build/ci/index.bundle --assets-dest build/ci/assets",
+    "bundle": "mkdir -p build/ci/assets && react-native bundle --entry-file index.js --platform kepler --dev false --bundle-output build/ci/index.bundle --assets-dest build/ci/assets",
     "test": "yarn bundle"
   },
   "dependencies": {
