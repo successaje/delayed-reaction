@@ -1,0 +1,177 @@
+@import 'tailwindcss';
+
+/*
+ * Delayed Reaction design tokens.
+ *
+ * Dark by intent: the product lives next to a TV at night. The palette is floodlit ink and chalk,
+ * with two signal colours borrowed from broadcast: tally red for "live" and amber for "delayed".
+ * Amber is the brand accent because time offset is the product.
+ */
+@theme {
+  --color-ink-950: #0a0c0b;
+  --color-ink-900: #101311;
+  --color-ink-850: #151916;
+  --color-ink-800: #1b201c;
+  --color-ink-700: #242a26;
+  --color-line: #262c28;
+  --color-line-strong: #39413b;
+
+  --color-chalk: #f2f0e8;
+  --color-chalk-2: #c4c7be;
+  --color-chalk-3: #8d948b;
+
+  --color-amber: #ffb547;
+  --color-amber-dim: #3a2a10;
+  --color-live: #ff5a47;
+  --color-live-dim: #3a1612;
+  --color-turf: #6fd49a;
+  --color-turf-dim: #12301f;
+  --color-danger: #ff7a6b;
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Type scale: 12 / 13 / 15 / 17 / 20 / 24 / 32 / 44 / 60 */
+  --text-2xs: 0.75rem;
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.125rem;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.375rem;
+  --text-base: 1.0625rem;
+  --text-base--line-height: 1.6rem;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.9rem;
+  --text-2xl: 2rem;
+  --text-2xl--line-height: 2.3rem;
+  --text-3xl: 2.75rem;
+  --text-3xl--line-height: 2.95rem;
+  --text-4xl: 3.75rem;
+  --text-4xl--line-height: 3.8rem;
+
+  /* Radii: tight, broadcast-graphic rather than bubbly. */
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --animate-rise: rise 320ms var(--ease-out) both;
+  --animate-slide-in: slide-in 420ms var(--ease-out) both;
+  --animate-pulse-dot: pulse-dot 1.6s var(--ease-in-out) infinite;
+  --animate-fade: fade 200ms var(--ease-out) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(24px) skewX(-6deg);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-ink-950);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-ink-950);
+    color: var(--color-chalk);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01';
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-amber);
+    color: var(--color-ink-950);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 2px;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Condensed display face for headlines and reactions: the broadcast lower-third voice. */
+@utility display {
+  font-family: var(--font-sans);
+  font-stretch: 72%;
+  font-variation-settings: 'wdth' 72;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-chalk-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes busy {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
