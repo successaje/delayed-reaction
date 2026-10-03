@@ -16,6 +16,9 @@ export function VideoSurface({ uri, posterUri, onController, onStatus }: VideoSu
       isPlaying: () => !video.paused && !video.ended && video.readyState > 2,
       play: () => void video.play().catch(() => onStatus('error')),
       pause: () => video.pause(),
+      seekTo: (ms) => {
+        video.currentTime = Math.max(0, ms / 1000);
+      },
       seekBy: (delta) => {
         video.currentTime = Math.max(0, Math.min(video.duration || Infinity, video.currentTime + delta / 1000));
       },

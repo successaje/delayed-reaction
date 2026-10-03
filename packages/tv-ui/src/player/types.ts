@@ -6,6 +6,7 @@ export interface MediaController {
   play(): void;
   pause(): void;
   seekBy(deltaMs: number): void;
+  seekTo(ms: number): void;
 }
 
 export type MediaStatus = 'loading' | 'ready' | 'buffering' | 'ended' | 'error';

@@ -10,6 +10,7 @@ import { ClockBar } from './clock-bar';
 import { ConnectionStatus } from './connection-status';
 import { Feed } from './feed';
 import { InviteCard } from './invite-card';
+import { Moments } from './moments';
 import { Presence } from './presence';
 import { ReactionPad } from './reaction-pad';
 import { SyncPanel } from './sync-panel';
@@ -42,9 +43,14 @@ export function RoomLive({
       if (!engine) return;
       try {
         const reaction = await engine.react(body);
-        const line = describeDeliveries(
-          deliveries(reaction.position, engine.currentViewers, session.viewerId, sport, engine.serverNow()),
-        );
+        // The TV this phone follows is in the room with you: say so, rather than "is seeing it now".
+        const others = deliveries(reaction.position, engine.currentViewers, session.viewerId, sport, engine.serverNow())
+          .filter((d) => d.viewer.id !== session.linkedTo);
+        const tv = session.linkedTo ? engine.currentViewers.find((v) => v.id === session.linkedTo) : null;
+        const line =
+          tv && !others.some((d) => d.when === 'later')
+            ? `On the ${tv.deviceLabel ?? tv.name} now.`
+            : describeDeliveries(others);
         toast.show({ title: 'Sent', detail: line, tone: 'success', durationMs: 3_500 });
       } catch {
         toast.show({
@@ -96,6 +102,7 @@ export function RoomLive({
               sport={sport}
               serverNow={engine?.serverNow() ?? Date.now()}
             />
+            <Moments session={session} sport={sport} viewers={viewers} />
             <Feed
               entries={state.feed}
               viewers={viewers}

@@ -46,6 +46,9 @@ export function VideoSurface({ uri, onController, onStatus }: VideoSurfaceProps)
           isPlaying: () => !player.paused && !player.ended,
           play: () => player.play(),
           pause: () => player.pause(),
+          seekTo: (ms) => {
+            player.currentTime = Math.max(0, ms / 1000);
+          },
           seekBy: (delta) => {
             player.currentTime = Math.max(0, (player.currentTime ?? 0) + delta / 1000);
           },

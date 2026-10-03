@@ -1,10 +1,11 @@
 import { playerPlayhead, TimelineSync, type SavedSession, type SyncStatus } from '@delayed-reaction/client';
 import { useTimelineState } from '@delayed-reaction/client/react';
-import { compare, getSport, type ProgramDto, type ReactionDto } from '@delayed-reaction/core';
+import { compare, getSport, type ProgramDto, type ReactionDto, type Recap, type RecapMoment } from '@delayed-reaction/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { DefaultFocus } from 'react-tv-space-navigation';
 import { TvButton } from '../components/Focusable';
+import { FullTime } from '../components/FullTime';
 import { Presence } from '../components/Presence';
 import { QrCode } from '../components/QrCode';
 import { ReactionCard } from '../components/ReactionCard';
@@ -104,9 +105,38 @@ export function PlayerScreen({
 
   const poke = useCallback(() => setControlsUntil(Date.now() + CONTROLS_LINGER_MS), []);
 
+  // At full time, give the final position a moment to reach the server, then fetch the recap.
+  const [recap, setRecap] = useState<Recap | null>(null);
+  useEffect(() => {
+    if (media !== 'ended') return;
+    engine.syncSoon();
+    const timer = setTimeout(() => {
+      api.recap(session.roomCode, session.token).then(setRecap, () => setRecap({ until: { period: 0, ms: 0 }, total: 0, buckets: [], moments: [] }));
+    }, 1_500);
+    return () => clearTimeout(timer);
+  }, [media, api, engine, session.roomCode, session.token]);
+
+  /** Replays a moment from five seconds before it, so the build-up is on screen. */
+  const replay = useCallback(
+    (moment: RecapMoment) => {
+      const player = controllerRef.current;
+      const marker = program.markers.find((m) => m.period === moment.position.period);
+      if (!player || !marker) return;
+      setRecap(null);
+      setCards([]);
+      player.seekTo(marker.mediaMs + Math.max(0, moment.position.ms - 5_000));
+      player.play();
+      setMedia('ready');
+      engine.syncSoon();
+    },
+    [program.markers, engine],
+  );
+
   useRemote((key) => {
     const player = controllerRef.current;
     poke();
+    // At full time the moments list owns the remote (via spatial navigation), except Back.
+    if (media === 'ended' && key !== RemoteKey.Back) return;
     switch (key) {
       case RemoteKey.Back:
         onExit();
@@ -162,7 +192,7 @@ export function PlayerScreen({
     <View style={styles.root}>
       <VideoSurface uri={program.mediaUrl} posterUri={program.posterUrl} onController={onController} onStatus={setMedia} />
 
-      <View style={styles.top} pointerEvents="none">
+      <View style={[styles.top, media === 'ended' && { opacity: 0 }]} pointerEvents="none">
         <Scorebug
           position={playhead.position}
           sport={sport}
@@ -187,13 +217,17 @@ export function PlayerScreen({
         })}
       </View>
 
-      {controls && (
+      {media === 'ended' && (
+        <FullTime recap={recap} sport={sport} viewers={state.viewers} onReplay={replay} onLeave={onExit} />
+      )}
+
+      {controls && media !== 'ended' && (
         <View style={styles.bottom} pointerEvents="none">
           <View style={styles.bottomRow}>
             <View style={{ flex: 1 }}>
               <Text style={[type.heading, { color: color.chalk }]}>{program.title}</Text>
               <Text style={[type.label, { color: color.chalk2, fontWeight: '400' }]}>
-                {media === 'ended' ? 'Full time. Press Back for the room.' : playing ? 'OK pauses · ◀ ▶ skip 10 s · Back leaves' : 'Paused · OK to play'}
+                {playing ? 'OK pauses · ◀ ▶ skip 10 s · Back leaves' : 'Paused · OK to play'}
               </Text>
               <View style={{ marginTop: space.md }}>
                 <Presence
