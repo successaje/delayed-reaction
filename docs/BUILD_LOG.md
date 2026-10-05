@@ -19,8 +19,8 @@
 
 ## Next
 
-- [ ] Deploy to AWS and Vercel (needs AWS credentials)
-- [ ] Run on the Vega Virtual Device or a Fire TV (needs the Vega SDK)
+- [x] Deploy to AWS and Vercel
+- [x] Build with the Vega SDK and run on the Vega Virtual Device
 - [x] Vega Media Controls
 - [x] Post-match recap
 - [ ] Demo video
