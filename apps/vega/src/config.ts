@@ -1,7 +1,6 @@
 /**
- * Where the TV app finds the API and the phone companion. Point these at your deployment,
- * or at your machine's LAN address when running against local servers from the
- * Vega Virtual Device or a Fire TV on the same network.
+ * Where the TV app finds the API and the phone companion (encoded in the room QR code).
+ * Production defaults; for local servers, use your machine's LAN address instead.
  */
-export const API_URL = 'http://10.0.2.2:8787';
-export const WEB_URL = 'http://10.0.2.2:3000';
+export const API_URL = 'https://hi0uggjch1.execute-api.us-east-1.amazonaws.com';
+export const WEB_URL = 'https://delayed-reaction.vercel.app';
