@@ -81,7 +81,17 @@ Severity:
   - list valid OS versions in the error message, or add `vega platform os-versions`;
   - update the samples' manifests.
 
-### 11. `vega project doctor` is excellent. *(positive)*
+### 11. `useKeplerAppStateManager().getComponentInstance()` returns a new object each render. *(High)*
+
+- **Tried:** passing the component instance to `setMediaControlFocus`, as the multi-TV sample does. We listed it as an effect dependency, as React's rules suggest.
+- **Happened:** the video never played on the Virtual Device. The logs showed *"Initialization aborted due to deinitialization"* and *"Callback received after deinitialize call, destroying MediaElement"*. The changing instance re-ran the effect on every render, tearing the `VideoPlayer` down before it could attach its surface. It worked in our browser build, which doesn't have this hook.
+- **Cost:** a playback bug that only showed up on device.
+- **Workaround:** read the instance once into a ref.
+- **Would help:**
+  - return a stable instance (or memoize it inside the hook);
+  - or document that it isn't referentially stable.
+
+### 12. `vega project doctor` is excellent. *(positive)*
 
 - In one command it validated the manifest, OS versions, dependency alignment against the OS profile, deprecated APIs and VPT rules, and gave the exact fix for each.
 - It would help even more if `vega build` suggested running it when it fails.
