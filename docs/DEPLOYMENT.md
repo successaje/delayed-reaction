@@ -29,14 +29,30 @@ Leaving `webOrigin` empty allows any origin. That's safe, because the API authen
 
 ## 2. Vercel (web)
 
+The project is linked from the **repository root**, because the web app builds from workspace packages.
+
+Project settings:
+
+| Setting | Value |
+|---|---|
+| Root directory | `apps/web` |
+| Framework | Next.js |
+| Install command | `yarn workspaces focus @delayed-reaction/web` (installs only what the web app needs) |
+| Node | 22.x |
+
+Environment variables:
+
+| Variable | Value |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | The `ApiUrl` output |
+| `ENABLE_EXPERIMENTAL_COREPACK` | `1` (otherwise Vercel uses Yarn 1, which can't read Yarn 4 workspaces) |
+
 ```bash
-cd apps/web
-vercel link
-vercel env add NEXT_PUBLIC_API_URL production   # the ApiUrl output
+vercel link --project delayed-reaction
 vercel deploy --prod
 ```
 
-Set the Vercel project's root directory to `apps/web`. Install runs at the repository root (`yarn install`), because the app depends on workspace packages.
+`.vercelignore` keeps the upload small: no `node_modules`, the Vega app, or generated media.
 
 ## 3. Fire TV (Vega)
 
@@ -47,6 +63,14 @@ yarn workspace @delayed-reaction/vega build   # needs the Vega SDK (`kepler --ve
 ```
 
 Install the resulting `.vpkg` on the Vega Virtual Device or a registered Fire TV with the Vega CLI.
+
+## Current deployment
+
+| Piece | URL |
+|---|---|
+| Web (landing page and phone companion) | https://delayed-reaction.vercel.app |
+| API | https://hi0uggjch1.execute-api.us-east-1.amazonaws.com |
+| Media CDN | https://d3qn7f36ues5x4.cloudfront.net |
 
 ## Local development
 

@@ -1,0 +1,11 @@
+# Uploaded to Vercel: the web app and the workspace packages it builds from.
+node_modules
+**/node_modules
+apps/web/public/media
+apps/web/.next
+apps/vega
+apps/tv-web/dist
+infra/cdk.out
+services/api/dist
+**/*.tsbuildinfo
+.yarn/cache

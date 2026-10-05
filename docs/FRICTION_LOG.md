@@ -69,10 +69,28 @@ Severity:
 - **React Native Web's `Animated` reads Node's `global`.** We defined `global: 'globalThis'`.
 - **`useNativeDriver: true` silently never animates on web**, so cards rendered at opacity 0.
 
+### 10. The first SDK build fails until the manifest declares an OS version, and the CLI can't list valid ones. *(Medium)*
+
+- **Tried:** `react-native build-kepler` (→ `vega build`) on an app whose `manifest.toml` follows the multi-TV sample.
+- **Happened:** *"Missing [os.version].target. A Vega application must declare its OS version."* The error suggests `vega project update-manifest --os-version <version>`, but nothing tells you which versions exist. `vega platform` has no `list`. We found `1.2` by reading `sdk-compat.json` inside the CLI's `node_modules`. The public samples don't declare `[os.version]` either.
+- **Workaround:**
+  1. `vega project update-manifest --os-version 1.2 --os-min 1.2` (it also adds the `IVega_1_2` module);
+  2. `vega project doctor` flagged two package versions to align;
+  3. after that, the build produced `.vpkg` files for all three architectures.
+- **Would help:**
+  - list valid OS versions in the error message, or add `vega platform os-versions`;
+  - update the samples' manifests.
+
+### 11. `vega project doctor` is excellent. *(positive)*
+
+- In one command it validated the manifest, OS versions, dependency alignment against the OS profile, deprecated APIs and VPT rules, and gave the exact fix for each.
+- It would help even more if `vega build` suggested running it when it fails.
+
 ---
 
 ## What worked well
 
 - **Public npm packages for `@amazon-devices/*`.** We could typecheck and bundle for Vega before installing anything.
 - **The Vega samples** (`vega-video-sample`, `react-native-multi-tv-app-sample`). They're the real documentation for player and remote handling.
+- **The Vega Virtual Device.** `vega run-app` installed and launched our package in seconds (cold launch 293 ms), and device logs streamed with `vega device start-log-stream`.
 - **The `.kepler.*` / `.vega.*` platform file convention.** It made sharing 95% of the TV UI with a browser build straightforward.
