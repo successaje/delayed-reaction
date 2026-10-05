@@ -7,6 +7,8 @@ Watch the match an hour late and still watch it with your friends. Delayed React
 It's a Fire TV app (Vega OS) plus a phone companion that works in any browser.
 
 > Built for Amazon's *Build, Ship, Shape* hackathon, Fire TV track.
+>
+> **Live:** https://delayed-reaction.vercel.app
 
 ---
 
