@@ -15,7 +15,10 @@ import type { MediaController, VideoSurfaceProps } from './types';
 export function VideoSurface({ uri, kickoffMs, onController, onStatus, onExternalCommand }: VideoSurfaceProps) {
   const playerRef = useRef<VideoPlayer | null>(null);
   const [initialized, setInitialized] = useState(false);
-  const componentInstance = useKeplerAppStateManager().getComponentInstance();
+  // getComponentInstance() returns a new object on every render. Read it once: as an effect
+  // dependency it tore the player down and rebuilt it on each render, so playback never started.
+  const appState = useKeplerAppStateManager();
+  const componentInstanceRef = useRef(appState.getComponentInstance());
   const commandRef = useRef(onExternalCommand);
   commandRef.current = onExternalCommand;
 
@@ -40,7 +43,7 @@ export function VideoSurface({ uri, kickoffMs, onController, onStatus, onExterna
     // Take media-control focus so remote media keys, the system UI and Alexa drive this player.
     player
       .setMediaControlFocus(
-        componentInstance,
+        componentInstanceRef.current,
         new MatchMediaControls(player, kickoffMs, () => commandRef.current?.()),
       )
       .catch(() => undefined);
@@ -81,7 +84,7 @@ export function VideoSurface({ uri, kickoffMs, onController, onStatus, onExterna
       }
       playerRef.current = null;
     };
-  }, [uri, kickoffMs, componentInstance, onController, onStatus]);
+  }, [uri, kickoffMs, onController, onStatus]);
 
   return (
     <View style={StyleSheet.absoluteFill}>
