@@ -34,3 +34,5 @@ next-env.d.ts
 
 # AWS
 infra/cdk.out/
+infra/cdk-outputs.json
+.vercel
