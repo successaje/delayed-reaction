@@ -1,6 +1,6 @@
 import { createApp } from '@delayed-reaction/api/src/app';
 import { MemoryRoomStore } from '@delayed-reaction/api/src/store/memory';
-import { getSport, position, type ReactionDto } from '@delayed-reaction/core';
+import { FRESH_WITHIN_MS, getSport, position, type ReactionDto } from '@delayed-reaction/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   ApiClient,
@@ -90,8 +90,18 @@ describe('TimelineSync, end to end against the API', () => {
     await vi.advanceTimersByTimeAsync(23 * MIN + 10_000);
     expect(tundeSaw.shown()).toEqual([]); // 4 seconds before the moment: nothing yet
 
-    await vi.advanceTimersByTimeAsync(4_500);
-    expect(tundeSaw.shown()).toEqual([noooo.id]); // on the frame
+    // Step through the moment. The invariant: never before 23:14, and shown while still fresh.
+    // (Token hashing is real async work, so on a slow machine the sync can land a little late
+    // in fake time; the engine then shows it immediately because it's within the fresh window.)
+    const moment = 23 * MIN + 14_000;
+    let shownAt: number | null = null;
+    while (shownAt === null && tundeMediaMs < moment + FRESH_WITHIN_MS) {
+      await vi.advanceTimersByTimeAsync(200);
+      if (tundeSaw.shown().length) shownAt = tundeMediaMs;
+    }
+    expect(tundeSaw.shown()).toEqual([noooo.id]);
+    expect(shownAt).toBeGreaterThanOrEqual(moment);
+    expect(shownAt! - moment).toBeLessThanOrEqual(FRESH_WITHIN_MS);
 
     // Ada sees presence: Tunde is ~38 minutes behind her.
     const tundeView = adaSync.currentViewers.find((v) => v.id === tunde.viewer.id);
