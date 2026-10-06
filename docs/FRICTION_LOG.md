@@ -91,7 +91,16 @@ Severity:
   - return a stable instance (or memoize it inside the hook);
   - or document that it isn't referentially stable.
 
-### 12. `vega project doctor` is excellent. *(positive)*
+### 12. App icon: the documented file layout makes an invalid package. *(Medium)*
+
+- **Tried:** following the manifest docs: `icon = "@image/app_icon"`, with the file at `assets/image/app_icon.png`.
+- **Happened:** the build warned *"Icon file not found … assets/image/app_icon does not exist"* but carried on ("icon validation is not enforced"). Installing then failed with *"Package is invalid"* and no further detail.
+- **Workaround:** name the file `assets/image/app_icon`, with no extension.
+- **Would help:**
+  - accept the `.png` extension, or document the extensionless name;
+  - make the build fail on the icon warning, instead of producing a package the device rejects.
+
+### 13. `vega project doctor` is excellent. *(positive)*
 
 - In one command it validated the manifest, OS versions, dependency alignment against the OS profile, deprecated APIs and VPT rules, and gave the exact fix for each.
 - It would help even more if `vega build` suggested running it when it fails.

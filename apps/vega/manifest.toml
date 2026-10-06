@@ -5,6 +5,7 @@ schema-version = 1
 title = "Delayed Reaction"
 version = "0.1.0"
 id = "com.successaje.delayedreaction"
+icon = "@image/app_icon"
 
 [os.version]
 min = "1.2"
@@ -19,6 +20,7 @@ categories = ["com.amazon.category.main", "com.amazon.category.kepler.media"]
 
 [processes]
 [[processes.group]]
+id = "delayed_reaction_main"
 component-ids = ["com.successaje.delayedreaction.main"]
 
 [wants]
