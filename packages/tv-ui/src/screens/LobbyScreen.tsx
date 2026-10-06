@@ -36,6 +36,11 @@ export function LobbyScreen({
 
   useRemote((key) => key === RemoteKey.Back && onBack());
 
+  // One line per room for device logs and support: which room this TV is in.
+  useEffect(() => {
+    console.info(`[DelayedReaction] room ${session.roomCode} as ${session.viewerId}`);
+  }, [session.roomCode, session.viewerId]);
+
   useEffect(() => {
     let cancelled = false;
     const load = () =>
