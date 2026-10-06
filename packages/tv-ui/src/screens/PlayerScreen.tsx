@@ -1,6 +1,6 @@
 import { playerPlayhead, TimelineSync, type SavedSession, type SyncStatus } from '@delayed-reaction/client';
 import { useTimelineState } from '@delayed-reaction/client/react';
-import { compare, detectCrowd, getSport, heat, type Shown, type PredictionsDto, type ProgramDto, type ReactionDto, type Recap, type RecapMoment } from '@delayed-reaction/core';
+import { compare, detectCrowd, getSport, heat, QUICK_REACTIONS, type Shown, type PredictionsDto, type ProgramDto, type ReactionDto, type Recap, type RecapMoment } from '@delayed-reaction/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { DefaultFocus } from 'react-tv-space-navigation';
@@ -9,6 +9,7 @@ import { FullTime } from '../components/FullTime';
 import { Presence } from '../components/Presence';
 import { QrCode } from '../components/QrCode';
 import { ReactionCard } from '../components/ReactionCard';
+import { ReactionTray, TRAY_HEIGHT } from '../components/ReactionTray';
 import { Scorebug } from '../components/Scorebug';
 import { Message, Screen } from '../components/Screen';
 import type { MediaController, MediaStatus } from '../player/types';
@@ -23,6 +24,10 @@ const CARD_LIFETIME_MS = 7_000;
 const MAX_CARDS = 4;
 const SEEK_MS = 10_000;
 const CONTROLS_LINGER_MS = 4_000;
+/** The reaction tray closes itself after this long without a press. */
+const TRAY_IDLE_MS = 6_000;
+/** Presses closer together than this are a bounce, not a second reaction. */
+const SEND_GAP_MS = 600;
 /** A reaction behind the playhead posted this recently is a reply from someone watching later. */
 const LATE_REPLY_WINDOW_MS = 30_000;
 
@@ -30,6 +35,8 @@ interface Card {
   readonly reaction: ReactionDto;
   readonly late: boolean;
   readonly shownAt: number;
+  /** Sent from this TV with the remote. */
+  readonly own?: boolean;
 }
 
 /**
@@ -84,21 +91,29 @@ export function PlayerScreen({
 
   useEffect(() => {
     engine.start();
+    // Reactions landing now (friends' or this TV's own) feed the crowd sound.
+    const hear = (reactions: readonly ReactionDto[], at: number) => {
+      recentRef.current = [
+        ...recentRef.current.filter((s) => at - s.at < 15_000),
+        ...reactions.map((reaction) => ({ reaction, at })),
+      ];
+      const moment = detectCrowd(recentRef.current, at, lastCrowdRef.current);
+      if (moment) {
+        lastCrowdRef.current = at;
+        crowd.play(moment.mood, moment.intensity);
+      }
+    };
     const unsubscribe = engine.subscribe((event) => {
       if (event.type === 'status') console.warn(`[DelayedReaction] sync ${event.status}`);
+      if (event.type === 'own' && event.state === 'sending') {
+        const at = Date.now();
+        hear([event.reaction], at);
+        setCards((all) => [...all, { reaction: event.reaction, late: false, shownAt: at, own: true }].slice(-MAX_CARDS));
+        return;
+      }
       if (event.type !== 'due' && event.type !== 'history') return;
       const at = Date.now();
-      if (event.type === 'due') {
-        recentRef.current = [
-          ...recentRef.current.filter((s) => at - s.at < 15_000),
-          ...event.reactions.map((reaction) => ({ reaction, at })),
-        ];
-        const moment = detectCrowd(recentRef.current, at, lastCrowdRef.current);
-        if (moment) {
-          lastCrowdRef.current = at;
-          crowd.play(moment.mood, moment.intensity);
-        }
-      }
+      if (event.type === 'due') hear(event.reactions, at);
       const serverNow = engine.serverNow();
       const fresh = event.reactions
         .filter((r) => r.viewerId !== session.viewerId)
@@ -153,12 +168,61 @@ export function PlayerScreen({
     [program.markers, engine],
   );
 
+  // The reaction tray: Up opens it, ◀ ▶ pick, OK sends. It remembers the last word used.
+  const [tray, setTray] = useState<{ selected: number; until: number } | null>(null);
+  const lastPickRef = useRef(0);
+  const lastSendRef = useRef(0);
+  const [failedAt, setFailedAt] = useState(-Infinity);
+  const trayOpen = tray !== null && now < tray.until && media !== 'ended';
+
+  const send = useCallback(
+    (index: number) => {
+      const at = Date.now();
+      if (at - lastSendRef.current < SEND_GAP_MS) return;
+      lastSendRef.current = at;
+      lastPickRef.current = index;
+      const reaction = QUICK_REACTIONS[index];
+      if (!reaction) return;
+      // The engine retries on its own; only a final failure is worth a word on screen.
+      engine.react({ kind: 'quick', value: reaction.id }).catch(() => setFailedAt(Date.now()));
+    },
+    [engine],
+  );
+
   useRemote((key) => {
     const player = controllerRef.current;
     poke();
     // At full time the moments list owns the remote (via spatial navigation), except Back.
     if (media === 'ended' && key !== RemoteKey.Back) return;
+    if (trayOpen) {
+      const count = QUICK_REACTIONS.length;
+      const until = Date.now() + TRAY_IDLE_MS;
+      switch (key) {
+        case RemoteKey.Left:
+          setTray({ selected: (tray.selected - 1 + count) % count, until });
+          return;
+        case RemoteKey.Right:
+          setTray({ selected: (tray.selected + 1) % count, until });
+          return;
+        case RemoteKey.Select:
+          send(tray.selected);
+          setTray(null);
+          return;
+        case RemoteKey.Up:
+          setTray({ ...tray, until });
+          return;
+        case RemoteKey.Down:
+        case RemoteKey.Back:
+          setTray(null);
+          return;
+        default:
+          break; // Play/pause and skip keys still drive the match.
+      }
+    }
     switch (key) {
+      case RemoteKey.Up:
+        setTray({ selected: lastPickRef.current, until: Date.now() + TRAY_IDLE_MS });
+        return;
       case RemoteKey.Back:
         onExit();
         return;
@@ -209,7 +273,7 @@ export function PlayerScreen({
 
   const playhead = readPlayhead();
   const playing = playhead.playing;
-  const controls = !playing || now < controlsUntil || media === 'ended';
+  const controls = !trayOpen && (!playing || now < controlsUntil || media === 'ended');
   const friends = state.viewers.filter((v) => v.id !== session.viewerId && v.clockSource !== 'linked').length;
   const duration = controllerRef.current?.durationMs() ?? program.durationMs;
   const current = controllerRef.current?.currentTimeMs() ?? 0;
@@ -232,25 +296,27 @@ export function PlayerScreen({
           sport={sport}
           friends={friends}
           heat={heat(recentRef.current, now)}
-          status={statusLine(state.status, media)}
+          status={now - failedAt < 4_000 ? "Your reaction didn't send" : statusLine(state.status, media)}
         />
       </View>
 
-      <View style={[styles.cards, { bottom: controls ? 440 : 160 }]} pointerEvents="none">
+      <View style={[styles.cards, { bottom: controls ? 440 : trayOpen ? TRAY_HEIGHT + space.md : 160 }]} pointerEvents="none">
         {visibleCards.map((card) => {
           const author = state.viewers.find((v) => v.id === card.reaction.viewerId);
           return (
             <ReactionCard
               key={card.reaction.id}
               reaction={card.reaction}
-              name={author?.name ?? 'A friend'}
-              accent={author?.color ?? color.chalk3}
+              name={card.own ? 'You' : (author?.name ?? 'A friend')}
+              accent={card.own ? color.amber : (author?.color ?? color.chalk3)}
               sport={sport}
               late={card.late}
             />
           );
         })}
       </View>
+
+      {trayOpen && <ReactionTray selected={tray.selected} />}
 
       {media === 'ended' && (
         <FullTime recap={recap} calls={calls} title={program.title} sport={sport} viewers={state.viewers} onReplay={replay} onLeave={onExit} />
@@ -262,7 +328,7 @@ export function PlayerScreen({
             <View style={{ flex: 1 }}>
               <Text style={[type.heading, { color: color.chalk }]}>{program.title}</Text>
               <Text style={[type.label, { color: color.chalk2, fontWeight: '400' }]}>
-                {playing ? 'OK pauses · ◀ ▶ skip 10 s · Back leaves' : 'Paused · OK to play'}
+                {playing ? '▲ react · OK pauses · ◀ ▶ skip 10 s · Back leaves' : 'Paused · OK to play · ▲ react'}
               </Text>
               <View style={{ marginTop: space.md }}>
                 <Presence
@@ -279,7 +345,7 @@ export function PlayerScreen({
               <View style={styles.qr}>
                 <QrCode value={`${webUrl}/r/${session.roomCode}?tv=${session.viewerId}`} size={200} />
                 <Text style={[type.label, { color: color.chalk2, fontWeight: '400', marginTop: 10 }]}>
-                  React from your phone
+                  Or react from your phone
                 </Text>
               </View>
             )}
