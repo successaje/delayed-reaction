@@ -16,6 +16,7 @@
 | 2026-10-03 | Vega Media Controls: system and Alexa transport drive the match clock | #11 |
 | 2026-10-03 | TV home how-it-works panel | #12 |
 | 2026-10-03 | Demo video plan and submission draft | #13 |
+| 2026-10-06 | React from the TV remote: ▲ opens a reaction tray pinned to the TV's playhead | #25 |
 
 ## Next
 

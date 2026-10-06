@@ -16,6 +16,7 @@ Most people can't watch live sport live: kids' bedtime, a late shift, a differen
 Delayed Reaction is a Fire TV app and a phone companion.
 - **Pinned to the match clock.** Friends react to a game on their phones, and each reaction is pinned to the *match clock* (for example `1H 23:14`), not the wall clock.
 - **Reactions land on the frame.** Watch on Fire TV an hour later and every reaction slides in as a broadcast-style lower-third on the frame it was sent. Pause and the reactions wait, rewind and they replay, skip ahead and they're filed away instead of flooding the screen.
+- **React from the remote.** Press ▲ during the match, pick a word, press OK. It's pinned to the TV's own playhead, so no phone is needed.
 - **Phone pairing in one scan.** Scan the QR code on the TV and your phone becomes a reaction pad already synced to the TV's playhead.
 - **Senders know the timing.** When you react live, the app tells you exactly when each friend will see it: *"Tunde will see this in 38 min."*
 - **Replies from behind.** Reactions from people watching even later travel backwards to you.
