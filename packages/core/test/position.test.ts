@@ -39,6 +39,8 @@ describe('match positions', () => {
     expect(formatPosition(position(1, 23 * 60_000 + 14_900), football)).toBe('1H 23:14');
     expect(formatPosition(position(2, 47 * 60_000), football)).toBe('2H 47:00');
     expect(formatPosition(position(0, 0), football)).toBe('Pre-match');
+    expect(formatPosition(position(2, 65_000), getSport('basketball'))).toBe('Q2 01:05');
+    expect(formatPosition(position(2, 65_000), getSport('college-basketball'))).toBe('2H 01:05');
   });
 
   it('estimates gaps across periods using nominal period lengths', () => {
@@ -46,5 +48,7 @@ describe('match positions', () => {
     const b = position(2, 10 * 60_000);
     expect(estimateGapMs(a, b, football)).toBe(15 * 60_000);
     expect(estimateGapMs(b, a, football)).toBe(-15 * 60_000);
+    // College halves are 20 minutes: 18:00 in the first half to 2:00 in the second is 4 minutes.
+    expect(estimateGapMs(position(1, 18 * 60_000), position(2, 2 * 60_000), getSport('college-basketball'))).toBe(4 * 60_000);
   });
 });
