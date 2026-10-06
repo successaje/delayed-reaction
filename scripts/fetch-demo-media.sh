@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-# Builds the demo program from CC0 footage of the 2021 FIFA Beach Soccer World Cup final
-# (Russian Football Union v Japan, Wikimedia Commons). Media is generated, not committed.
+# Builds the demo programs from freely licensed footage on Wikimedia Commons. Media is
+# generated, not committed.
+#   - beach-final-2021: 2021 FIFA Beach Soccer World Cup final, RFU v Japan (CC0, Voltmetro)
+#   - hawaii-nau-2018: Hawai'i v Northern Arizona men's basketball, 19 Nov 2018
+#     (CC BY 3.0, Warrior Insider)
 #
 #   scripts/fetch-demo-media.sh [output-dir]     (default: apps/web/public/media)
 #
@@ -52,3 +55,33 @@ ffmpeg -loglevel error -y -ss 30 -i "$OUT/beach-final-2021.mp4" -frames:v 1 -q:v
 
 DURATION_MS=$(ffprobe -loglevel error -show_entries format=duration -of csv=p=0 "$OUT/beach-final-2021.mp4" | awk '{printf "%d", $1 * 1000}')
 echo "Wrote $OUT/beach-final-2021.mp4 (${DURATION_MS} ms) and poster"
+
+# Basketball: the team's highlights reel, keeping only game action in match order. The opening
+# montage (players' final stat lines) and the interviews are cut: both would spoil the game.
+# The first three segments are the first half, the rest the second; the half starts at the
+# fourth segment, which is the second marker in data/programs.json.
+echo "Downloading the basketball highlights"
+curl -fsSL -A "$UA" "$BASE/a/ac/Hawaii_Basketball_-_Highlights_From_Northern_Arizona_Game.webm" -o "$WORK/hawaii.webm"
+SEGMENTS=("82 135" "160 195" "216 229" "260 295" "318 343" "450 504")
+rm -f "$WORK/hlist.txt"
+i=0
+FIRST_HALF_MS=0
+for segment in "${SEGMENTS[@]}"; do
+  i=$((i + 1))
+  read -r from to <<< "$segment"
+  len=$((to - from))
+  # Short audio fades at each edge so the joins don't click.
+  ffmpeg -loglevel error -y -ss "$from" -t "$len" -i "$WORK/hawaii.webm" \
+    -vf "scale=1280:720,fps=30,format=yuv420p" \
+    -af "afade=t=in:d=0.25,afade=t=out:st=$(echo "$len - 0.25" | bc):d=0.25" \
+    -c:v libx264 -preset slow -crf 24 -maxrate 3000k -bufsize 6000k -g 60 \
+    -c:a aac -ar 48000 -ac 2 "$WORK/h$i.mp4"
+  echo "file '$WORK/h$i.mp4'" >> "$WORK/hlist.txt"
+  [ "$i" -le 3 ] && FIRST_HALF_MS=$((FIRST_HALF_MS + $(ffprobe -loglevel error -show_entries format=duration -of csv=p=0 "$WORK/h$i.mp4" | awk '{printf "%d", $1 * 1000}')))
+done
+ffmpeg -loglevel error -y -f concat -safe 0 -i "$WORK/hlist.txt" -c copy -movflags +faststart \
+  "$OUT/hawaii-nau-2018.mp4"
+ffmpeg -loglevel error -y -ss 4 -i "$OUT/hawaii-nau-2018.mp4" -frames:v 1 -q:v 3 \
+  "$OUT/hawaii-nau-2018.jpg"
+DURATION_MS=$(ffprobe -loglevel error -show_entries format=duration -of csv=p=0 "$OUT/hawaii-nau-2018.mp4" | awk '{printf "%d", $1 * 1000}')
+echo "Wrote $OUT/hawaii-nau-2018.mp4 (${DURATION_MS} ms, second half at ${FIRST_HALF_MS} ms) and poster"
