@@ -1,6 +1,6 @@
 import { playerPlayhead, TimelineSync, type SavedSession, type SyncStatus } from '@delayed-reaction/client';
 import { useTimelineState } from '@delayed-reaction/client/react';
-import { compare, getSport, type PredictionsDto, type ProgramDto, type ReactionDto, type Recap, type RecapMoment } from '@delayed-reaction/core';
+import { compare, detectCrowd, getSport, heat, type Shown, type PredictionsDto, type ProgramDto, type ReactionDto, type Recap, type RecapMoment } from '@delayed-reaction/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { DefaultFocus } from 'react-tv-space-navigation';
@@ -13,6 +13,7 @@ import { Scorebug } from '../components/Scorebug';
 import { Message, Screen } from '../components/Screen';
 import type { MediaController, MediaStatus } from '../player/types';
 import { VideoSurface } from '../player/VideoSurface';
+import { createCrowdSound } from '../audio/crowd';
 import { RemoteKey } from '../remote/keys';
 import { useRemote } from '../remote/use-remote';
 import { useServices } from '../services';
@@ -75,11 +76,28 @@ export function PlayerScreen({
   );
   const state = useTimelineState(engine);
 
+  // Crowd sound: when several friends react together, the room hears it.
+  const crowd = useMemo(() => createCrowdSound(webUrl), [webUrl]);
+  useEffect(() => () => crowd.dispose(), [crowd]);
+  const recentRef = useRef<Shown[]>([]);
+  const lastCrowdRef = useRef(-Infinity);
+
   useEffect(() => {
     engine.start();
     const unsubscribe = engine.subscribe((event) => {
       if (event.type !== 'due' && event.type !== 'history') return;
       const at = Date.now();
+      if (event.type === 'due') {
+        recentRef.current = [
+          ...recentRef.current.filter((s) => at - s.at < 15_000),
+          ...event.reactions.map((reaction) => ({ reaction, at })),
+        ];
+        const moment = detectCrowd(recentRef.current, at, lastCrowdRef.current);
+        if (moment) {
+          lastCrowdRef.current = at;
+          crowd.play(moment.mood, moment.intensity);
+        }
+      }
       const serverNow = engine.serverNow();
       const fresh = event.reactions
         .filter((r) => r.viewerId !== session.viewerId)
@@ -91,7 +109,7 @@ export function PlayerScreen({
       unsubscribe();
       engine.stop();
     };
-  }, [engine, session.viewerId]);
+  }, [engine, session.viewerId, crowd]);
 
   // One clock for the overlay: playhead display, card expiry, control fade.
   useEffect(() => {
@@ -212,6 +230,7 @@ export function PlayerScreen({
           position={playhead.position}
           sport={sport}
           friends={friends}
+          heat={heat(recentRef.current, now)}
           status={statusLine(state.status, media)}
         />
       </View>
