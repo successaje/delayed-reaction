@@ -42,23 +42,33 @@ export function Moments({
   const names = new Map(viewers.map((v) => [v.id, v]));
   const toast = useToast();
   const [sharing, setSharing] = useState<string | null>(null);
+  // Links already made, keyed by moment: shown in the row so a blocked copy never loses one.
+  const [links, setLinks] = useState<Record<string, string>>({});
 
   async function share(position: MatchPosition) {
     const key = `${position.period}:${position.ms}`;
     setSharing(key);
+    let url: string;
     try {
       const moment = await api.share(session.roomCode, session.token, { position });
-      const url = `${window.location.origin}/m/${moment.id}`;
-      if (typeof navigator.share === 'function') {
-        await navigator.share({ title: 'Delayed Reaction', text: 'This moment.', url }).catch(() => undefined);
-      } else {
-        await navigator.clipboard.writeText(url);
-        toast.show({ title: 'Link copied', detail: 'It plays the moment with everyone’s reactions.', tone: 'success' });
-      }
+      url = `${window.location.origin}/m/${moment.id}`;
+      setLinks((all) => ({ ...all, [key]: url }));
     } catch {
       toast.show({ title: "Couldn't share that", detail: 'Try again in a moment.', tone: 'error' });
+      return;
     } finally {
       setSharing(null);
+    }
+    if (typeof navigator.share === 'function') {
+      await navigator.share({ title: 'Delayed Reaction', text: 'This moment.', url }).catch(() => undefined);
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.show({ title: 'Link copied', detail: 'It plays the moment with everyone’s reactions.', tone: 'success' });
+    } catch {
+      // Some browsers refuse the clipboard once the request has round-tripped; the row has the link.
+      toast.show({ title: 'Link ready', detail: 'Open it from the moment to copy or send it.', tone: 'neutral' });
     }
   }
 
@@ -114,15 +124,26 @@ export function Moments({
                       ))}
                     </p>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="ml-auto shrink-0"
-                    busy={sharing === `${moment.position.period}:${moment.position.ms}`}
-                    onClick={() => share(moment.position)}
-                  >
-                    Share
-                  </Button>
+                  {links[`${moment.position.period}:${moment.position.ms}`] ? (
+                    <a
+                      href={links[`${moment.position.period}:${moment.position.ms}`]}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="ml-auto shrink-0 rounded-sm px-2.5 py-1.5 text-sm font-semibold text-amber hover:underline focus-visible:outline-2 focus-visible:outline-amber"
+                    >
+                      Open link
+                    </a>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="ml-auto shrink-0"
+                      busy={sharing === `${moment.position.period}:${moment.position.ms}`}
+                      onClick={() => share(moment.position)}
+                    >
+                      Share
+                    </Button>
+                  )}
                 </li>
               ))}
             </ol>
