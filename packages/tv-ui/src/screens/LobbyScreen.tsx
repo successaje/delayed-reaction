@@ -104,7 +104,7 @@ export function LobbyScreen({
             <Text style={[type.label, { color: color.amber }]}>Call it</Text>
             <Text style={[type.label, { color: color.chalk2, fontWeight: '400' }]}>
               {calls === 0
-                ? 'Predict the score on your phone before kick-off. Revealed at full time.'
+                ? `Predict the score on your phone before ${sport.startCue}. Revealed at full time.`
                 : `${calls} ${calls === 1 ? 'call' : 'calls'} sealed until full time. Scan to add yours.`}
             </Text>
           </View>
@@ -115,6 +115,9 @@ export function LobbyScreen({
             </DefaultFocus>
             <TvButton label="Back" variant="secondary" onSelect={onBack} />
           </SpatialNavigationView>
+          <Text style={[type.label, { color: color.chalk3, fontWeight: '400', marginTop: space.md }]}>
+            Footage: {program.credit.author} · {program.credit.license}
+          </Text>
         </View>
 
         <View style={styles.qrPanel}>

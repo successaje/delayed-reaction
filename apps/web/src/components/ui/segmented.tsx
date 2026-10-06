@@ -24,7 +24,7 @@ export function Segmented<T extends string>({
   return (
     <fieldset className="flex flex-col gap-1.5">
       <legend className="mb-1.5 text-xs font-medium text-chalk-2">{label}</legend>
-      <div className="grid grid-cols-2 gap-1.5">
+      <div className="grid grid-cols-2 gap-1.5 [&>*:last-child:nth-child(odd)]:col-span-2">
         {options.map((option) => (
           <label
             key={option.value}

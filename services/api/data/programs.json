@@ -6,13 +6,29 @@
     "sport": "football",
     "mediaUrl": "beach-final-2021.mp4",
     "posterUrl": "beach-final-2021.jpg",
-    "durationMs": 135029,
+    "durationMs": 135021,
     "markers": [{ "period": 1, "mediaMs": 0 }],
     "result": { "home": 5, "away": 2 },
     "credit": {
       "author": "Voltmetro",
       "license": "CC0",
       "sourceUrl": "https://commons.wikimedia.org/wiki/Category:2021_FIFA_Beach_Soccer_World_Cup_Final"
+    }
+  },
+  {
+    "id": "hawaii-nau-2018",
+    "title": "Hawaii v N. Arizona",
+    "subtitle": "NCAA men's basketball · 19 Nov 2018 · Stan Sheriff Center",
+    "sport": "college-basketball",
+    "mediaUrl": "hawaii-nau-2018.mp4",
+    "posterUrl": "hawaii-nau-2018.jpg",
+    "durationMs": 215188,
+    "markers": [{ "period": 1, "mediaMs": 0 }, { "period": 2, "mediaMs": 101100 }],
+    "result": { "home": 85, "away": 68 },
+    "credit": {
+      "author": "Warrior Insider",
+      "license": "CC BY 3.0",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hawaii_Basketball_-_Highlights_From_Northern_Arizona_Game.webm"
     }
   }
 ]

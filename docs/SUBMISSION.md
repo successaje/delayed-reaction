@@ -20,6 +20,7 @@ Delayed Reaction is a Fire TV app and a phone companion.
 - **Phone pairing in one scan.** Scan the QR code on the TV and your phone becomes a reaction pad already synced to the TV's playhead.
 - **Senders know the timing.** When you react live, the app tells you exactly when each friend will see it: *"Tunde will see this in 38 min."*
 - **Replies from behind.** Reactions from people watching even later travel backwards to you.
+- **Any sport's clock.** Positions are `(period, time into period)`, so the same model runs football halves, NBA quarters and college halves. The demo catalog has a beach soccer final and a college basketball game.
 - **Full-time recap.** The TV shows the group's loudest moments, each one replayable from the remote.
 
 You can see that friends are ahead of you, but never what they've seen.

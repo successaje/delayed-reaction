@@ -4,7 +4,7 @@
  * broadcaster delay and variable breaks bounded to a single period.
  */
 
-export type SportId = 'football' | 'basketball' | 'american-football' | 'other';
+export type SportId = 'football' | 'basketball' | 'college-basketball' | 'american-football' | 'other';
 
 export interface PeriodSpec {
   /** 1-based period number. Period 0 is reserved for pre-match. */
@@ -50,6 +50,17 @@ export const SPORTS: Readonly<Record<SportId, Sport>> = {
       { period: 3, label: 'Q3', name: 'third quarter', nominalMs: 12 * MIN },
       { period: 4, label: 'Q4', name: 'fourth quarter', nominalMs: 12 * MIN },
       { period: 5, label: 'OT', name: 'overtime', nominalMs: 5 * MIN },
+    ],
+  },
+  // Men's college basketball (NCAA) plays two 20-minute halves rather than quarters.
+  'college-basketball': {
+    id: 'college-basketball',
+    name: 'College basketball',
+    startCue: 'tip-off',
+    periods: [
+      { period: 1, label: '1H', name: 'first half', nominalMs: 20 * MIN },
+      { period: 2, label: '2H', name: 'second half', nominalMs: 20 * MIN },
+      { period: 3, label: 'OT', name: 'overtime', nominalMs: 5 * MIN },
     ],
   },
   'american-football': {

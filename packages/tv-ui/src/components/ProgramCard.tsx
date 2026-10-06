@@ -1,4 +1,4 @@
-import type { ProgramDto } from '@delayed-reaction/core';
+import { getSport, type ProgramDto } from '@delayed-reaction/core';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { color, radius, type } from '../theme';
 import { Focusable } from './Focusable';
@@ -13,7 +13,7 @@ export function ProgramCard({ program, onSelect }: { program: ProgramDto; onSele
               <Image source={{ uri: program.posterUrl }} style={StyleSheet.absoluteFill} resizeMode="cover" />
             ) : null}
             <View style={styles.sport}>
-              <Text style={[type.eyebrow, { color: color.ink950, letterSpacing: 2 }]}>{program.sport}</Text>
+              <Text style={[type.eyebrow, { color: color.ink950, letterSpacing: 2 }]}>{getSport(program.sport).name}</Text>
             </View>
           </View>
           <View style={styles.text}>

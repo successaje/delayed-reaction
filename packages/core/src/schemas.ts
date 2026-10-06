@@ -214,7 +214,13 @@ export interface SharedMomentDto {
   readonly sport: SportId;
   readonly position: z.infer<typeof matchPositionSchema>;
   /** For catalog matches: where to play from, and the media time of the moment. */
-  readonly media: { readonly url: string; readonly posterUrl: string | null; readonly momentMs: number } | null;
+  readonly media: {
+    readonly url: string;
+    readonly posterUrl: string | null;
+    readonly momentMs: number;
+    /** Who filmed it and under what licence; shown with the clip. */
+    readonly credit: { readonly author: string; readonly license: string; readonly sourceUrl: string };
+  } | null;
   readonly reactions: readonly {
     readonly name: string;
     readonly color: string;
