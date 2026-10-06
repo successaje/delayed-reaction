@@ -1,5 +1,8 @@
 import { AppShell, PageTitle } from '@/components/app-shell';
+import type { Metadata } from 'next';
 import { ButtonLink } from '@/components/ui/button';
+
+export const metadata: Metadata = { title: 'Not found' };
 
 export default function NotFound() {
   return (

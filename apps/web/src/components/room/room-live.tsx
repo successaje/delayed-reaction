@@ -38,6 +38,9 @@ export function RoomLive({
   const viewers = state.viewers.length ? state.viewers : room.viewers;
   const linkedTv = session.linkedTo ? viewers.find((v) => v.id === session.linkedTo) : null;
   const needsKickoff = clock !== null && !clock.synced;
+  // The invite card is for an empty room; once a friend joins, presence takes over.
+  const alone = !viewers.some((v) => v.id !== session.viewerId && v.id !== session.linkedTo);
+  const showInvite = isNew && alone;
 
   const send = useCallback(
     async (body: ReactionBody) => {
@@ -104,14 +107,17 @@ export function RoomLive({
               clock={clock}
               linkedName={linkedTv ? (linkedTv.deviceLabel ?? linkedTv.name) : null}
             />
-            {isNew && <InviteCard code={room.room.code} title={room.room.title} />}
-            <Presence
-              viewers={viewers}
-              selfId={session.viewerId}
-              playhead={playhead.position}
-              sport={sport}
-              serverNow={engine?.serverNow() ?? Date.now()}
-            />
+            {showInvite ? (
+              <InviteCard code={room.room.code} title={room.room.title} />
+            ) : (
+              <Presence
+                viewers={viewers}
+                selfId={session.viewerId}
+                playhead={playhead.position}
+                sport={sport}
+                serverNow={engine?.serverNow() ?? Date.now()}
+              />
+            )}
             <CallIt
               session={session}
               title={room.room.title}
