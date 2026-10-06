@@ -85,6 +85,7 @@ export function PlayerScreen({
   useEffect(() => {
     engine.start();
     const unsubscribe = engine.subscribe((event) => {
+      if (event.type === 'status') console.warn(`[DelayedReaction] sync ${event.status}`);
       if (event.type !== 'due' && event.type !== 'history') return;
       const at = Date.now();
       if (event.type === 'due') {
