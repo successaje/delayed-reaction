@@ -9,3 +9,4 @@ export * from './ids';
 export * from './schemas';
 export * from './recap';
 export * from './predictions';
+export * from './crowd';
