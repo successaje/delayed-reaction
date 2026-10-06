@@ -23,7 +23,8 @@
 | 0:32 | Fire TV home → *RFU v Japan* → lobby with the QR code and "Ada · 38 min ahead". | "Tunde's watching later, on Fire TV. He can see that Ada's ahead, but nothing she's said." |
 | 0:45 | Phone B scans the QR → "Follow Living room TV" → pad. | "His phone becomes the reaction pad, already synced to the TV. Nothing to set up." |
 | 0:55 | TV plays. At the penalty, **Ada's "NOOO" slides in on the frame**. | (Let it breathe; no voice for two seconds.) |
-| 1:05 | Tunde reacts "how did he save that". Cut to Ada's phone: it arrives marked *caught up*. | "And his reactions travel backwards to Ada: replies from behind." |
+| 1:05 | Tunde presses ▲ on the remote, picks **REF?!**, OK. It slides in as "You". | "No phone in reach? React from the remote." |
+| 1:12 | Tunde types "how did he save that" on the phone. Cut to Ada's phone: both arrive marked *caught up*. | "And his reactions travel backwards to Ada: replies from behind." |
 | 1:20 | Remote: pause, then rewind 10 s. The card disappears and lands again on the frame. "Alexa, pause." | "The video playhead *is* the clock. Pause, rewind, Alexa: the reactions follow." |
 | 1:40 | Skip ahead 30 s: no flood of cards. | "Skip ahead and they're filed away. Never a spoiler, never a flood." |
 | 1:50 | Full time: **The loudest moments** → select the penalty → it replays. | "At full time, the group's loudest moments. Built only from what you've watched." |
