@@ -75,7 +75,7 @@ services/
   api/       Hono HTTP API: Node server locally, Lambda in production; memory or DynamoDB store
 infra/       AWS CDK stack
 docs/        Product model, architecture, deployment, friction log, build log
-scripts/     Demo media builders (CC0 footage from Wikimedia Commons)
+scripts/     Demo media builders (freely licensed footage from Wikimedia Commons)
 ```
 
 ## Local development
@@ -85,7 +85,7 @@ Requirements: Node 22+, Corepack (Yarn 4), and ffmpeg for the demo media.
 ```bash
 corepack enable
 yarn install
-scripts/fetch-demo-media.sh   # builds the CC0 demo match into apps/web/public/media
+scripts/fetch-demo-media.sh   # builds the two demo matches into apps/web/public/media
 
 yarn dev:api    # API on http://localhost:8787 (in-memory store)
 yarn dev:web    # landing page and phone companion on http://localhost:3000
@@ -133,7 +133,9 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md):
 
 ## Credits
 
-Demo footage is the 2021 FIFA Beach Soccer World Cup final, filmed from the stands by **Voltmetro** and released under **CC0** on [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:2021_FIFA_Beach_Soccer_World_Cup_Final).
+Demo footage, both from Wikimedia Commons:
+- the 2021 FIFA Beach Soccer World Cup final, filmed from the stands by **Voltmetro**, released under **CC0** ([source](https://commons.wikimedia.org/wiki/Category:2021_FIFA_Beach_Soccer_World_Cup_Final));
+- Hawai'i v Northern Arizona men's basketball (19 November 2018), highlights by **Warrior Insider** under **CC BY 3.0** ([source](https://commons.wikimedia.org/wiki/File:Hawaii_Basketball_-_Highlights_From_Northern_Arizona_Game.webm)). The demo cut keeps only game action: the interviews and the opening stat montage are removed.
 
 Crowd sounds: the cheer is from *Football Austria vs. Sweden* by Work With Sounds / Torsten Nilsson ([CC BY 4.0](https://commons.wikimedia.org/wiki/File:WWS_FootballAustriavs.Sweden.ogg)); the groan is *Ohhh ahhh* by starlite (public domain, via Wikimedia Commons).
 

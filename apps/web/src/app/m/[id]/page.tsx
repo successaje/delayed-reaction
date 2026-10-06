@@ -26,7 +26,18 @@ export default async function MomentPage({ params }: { params: Promise<{ id: str
   return (
     <AppShell width="wide">
       <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-center">
-        <MomentPlayer share={share} />
+        <figure>
+          <MomentPlayer share={share} />
+          {share.media && (
+            <figcaption className="mt-2 text-xs text-chalk-3">
+              Footage:{' '}
+              <a href={share.media.credit.sourceUrl} className="underline hover:text-chalk-2" rel="noreferrer" target="_blank">
+                {share.media.credit.author}
+              </a>
+              , {share.media.credit.license}
+            </figcaption>
+          )}
+        </figure>
         <div>
           <p className="eyebrow mb-3">
             {share.title} · {formatPosition(share.position, sport)}

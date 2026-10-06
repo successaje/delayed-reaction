@@ -313,7 +313,7 @@ export class RoomService {
       position: at,
       media:
         program && marker
-          ? { url: program.mediaUrl, posterUrl: program.posterUrl, momentMs: marker.mediaMs + at.ms }
+          ? { url: program.mediaUrl, posterUrl: program.posterUrl, momentMs: marker.mediaMs + at.ms, credit: program.credit }
           : null,
       reactions: reactions
         .filter((r) => r.position.period === at.period)
