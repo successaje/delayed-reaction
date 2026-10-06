@@ -6,7 +6,11 @@
 
 - **Devices:** the Vega Virtual Device (or a Fire TV Stick 4K Select) running the release build, pointed at the deployed API.
 - **Phones:** two. Phone A is "Ada" watching live; phone B is linked to the TV.
-- **Seed room:** Ada watches the demo match "live" first and reacts at the penalty (about 0:05), the save (about 0:30) and full time. Tunde (the TV) watches later.
+- **Seed room:**
+  1. On the TV, start the demo match.
+  2. Run `node scripts/seed-demo.mjs <ROOM_CODE>` (the code shown in the lobby).
+
+  Ada and Bola join as friends who already watched. Their reactions are pinned to the penalty (0:05), the nervy spell (0:30), a refereeing call (0:47), the winning celebrations (1:06) and full time (1:40). The script is safe to run twice.
 - **Recording:** a screen recording of the TV output plus phone screen recordings, composited side by side.
 
 ## Script
