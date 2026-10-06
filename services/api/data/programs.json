@@ -8,6 +8,7 @@
     "posterUrl": "beach-final-2021.jpg",
     "durationMs": 135029,
     "markers": [{ "period": 1, "mediaMs": 0 }],
+    "result": { "home": 5, "away": 2 },
     "credit": {
       "author": "Voltmetro",
       "license": "CC0",

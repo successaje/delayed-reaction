@@ -30,6 +30,7 @@ export function LobbyScreen({
   const { api, webUrl } = useServices();
   const [viewers, setViewers] = useState<Awaited<ReturnType<typeof api.getRoom>>['viewers']>([]);
   const [serverNow, setServerNow] = useState(Date.now());
+  const [calls, setCalls] = useState(0);
   const sport = getSport(program.sport);
   const joinUrl = `${webUrl}/r/${session.roomCode}?tv=${session.viewerId}`;
 
@@ -46,13 +47,22 @@ export function LobbyScreen({
         },
         () => undefined,
       );
+    const loadCalls = () =>
+      api.predictions(session.roomCode, session.token).then(
+        (p) => !cancelled && setCalls(p.predictions.length),
+        () => undefined,
+      );
     void load();
-    const timer = setInterval(load, 3_000);
+    void loadCalls();
+    const timer = setInterval(() => {
+      void load();
+      void loadCalls();
+    }, 3_000);
     return () => {
       cancelled = true;
       clearInterval(timer);
     };
-  }, [api, session.roomCode]);
+  }, [api, session.roomCode, session.token]);
 
   const others = viewers.filter((v) => v.id !== session.viewerId);
 
@@ -85,6 +95,15 @@ export function LobbyScreen({
             )}
           </View>
 
+          <View style={styles.callIt}>
+            <Text style={[type.label, { color: color.amber }]}>Call it</Text>
+            <Text style={[type.label, { color: color.chalk2, fontWeight: '400' }]}>
+              {calls === 0
+                ? 'Predict the score on your phone before kick-off. Revealed at full time.'
+                : `${calls} ${calls === 1 ? 'call' : 'calls'} sealed until full time. Scan to add yours.`}
+            </Text>
+          </View>
+
           <SpatialNavigationView direction="horizontal" style={{ flexDirection: 'row', gap: space.md, marginTop: 'auto' }}>
             <DefaultFocus>
               <TvButton label="Start watching" hint="Press play whenever you're ready" onSelect={onPlay} />
@@ -111,6 +130,7 @@ const styles = StyleSheet.create({
   codeRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.md, marginTop: space.md },
   code: { color: color.amber, letterSpacing: 10 },
   people: { marginTop: space.xl },
+  callIt: { marginTop: space.lg, gap: 4, borderLeftWidth: 4, borderLeftColor: color.amber, paddingLeft: space.sm },
   qrPanel: {
     width: 520,
     alignItems: 'center',

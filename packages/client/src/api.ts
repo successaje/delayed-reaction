@@ -4,6 +4,9 @@ import type {
   CreateRoomRequest,
   JoinRoomRequest,
   PostReactionRequest,
+  PredictRequest,
+  PredictionsDto,
+  ResultRequest,
   ProgramDto,
   Recap,
   ReactionDto,
@@ -84,6 +87,18 @@ export class ApiClient {
 
   recap(code: string, token: string): Promise<Recap> {
     return this.request('GET', `/v1/rooms/${encodeURIComponent(code)}/recap`, { token });
+  }
+
+  predictions(code: string, token: string): Promise<PredictionsDto> {
+    return this.request('GET', `/v1/rooms/${encodeURIComponent(code)}/predictions`, { token });
+  }
+
+  predict(code: string, token: string, body: PredictRequest): Promise<PredictionsDto> {
+    return this.request('POST', `/v1/rooms/${encodeURIComponent(code)}/predictions`, { body, token });
+  }
+
+  setResult(code: string, token: string, body: ResultRequest): Promise<PredictionsDto> {
+    return this.request('POST', `/v1/rooms/${encodeURIComponent(code)}/result`, { body, token });
   }
 
   postReaction(

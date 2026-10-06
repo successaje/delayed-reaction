@@ -1,6 +1,6 @@
 import { playerPlayhead, TimelineSync, type SavedSession, type SyncStatus } from '@delayed-reaction/client';
 import { useTimelineState } from '@delayed-reaction/client/react';
-import { compare, getSport, type ProgramDto, type ReactionDto, type Recap, type RecapMoment } from '@delayed-reaction/core';
+import { compare, getSport, type PredictionsDto, type ProgramDto, type ReactionDto, type Recap, type RecapMoment } from '@delayed-reaction/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { DefaultFocus } from 'react-tv-space-navigation';
@@ -107,11 +107,13 @@ export function PlayerScreen({
 
   // At full time, give the final position a moment to reach the server, then fetch the recap.
   const [recap, setRecap] = useState<Recap | null>(null);
+  const [calls, setCalls] = useState<PredictionsDto | null>(null);
   useEffect(() => {
     if (media !== 'ended') return;
     engine.syncSoon();
     const timer = setTimeout(() => {
       api.recap(session.roomCode, session.token).then(setRecap, () => setRecap({ until: { period: 0, ms: 0 }, total: 0, buckets: [], moments: [] }));
+      api.predictions(session.roomCode, session.token).then(setCalls, () => setCalls(null));
     }, 1_500);
     return () => clearTimeout(timer);
   }, [media, api, engine, session.roomCode, session.token]);
@@ -231,7 +233,7 @@ export function PlayerScreen({
       </View>
 
       {media === 'ended' && (
-        <FullTime recap={recap} sport={sport} viewers={state.viewers} onReplay={replay} onLeave={onExit} />
+        <FullTime recap={recap} calls={calls} title={program.title} sport={sport} viewers={state.viewers} onReplay={replay} onLeave={onExit} />
       )}
 
       {controls && media !== 'ended' && (

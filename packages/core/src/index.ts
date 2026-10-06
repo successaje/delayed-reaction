@@ -8,3 +8,4 @@ export * from './reactions';
 export * from './ids';
 export * from './schemas';
 export * from './recap';
+export * from './predictions';

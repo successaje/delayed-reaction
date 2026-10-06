@@ -8,6 +8,10 @@
 // Start a watch on the TV first, then seed its room code. Safe to run twice: reaction ids are
 // fixed per room, so the API de-duplicates them.
 
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 const args = process.argv.slice(2);
 const code = args.find((a) => /^[2-9A-HJ-NP-Z]{6}$/i.test(a))?.toUpperCase();
 const apiFlag = args.indexOf('--api');
@@ -49,11 +53,26 @@ async function call(method, path, body, token) {
 const room = await call('GET', `/v1/rooms/${code}`);
 console.log(`Room ${code}: ${room.room.title}`);
 
-const people = {};
+// Remember Ada and Bola per room, so re-running the script reuses them instead of adding
+// another pair of friends.
+const memo = join(tmpdir(), `delayed-reaction-seed-${new URL(API).host}-${code}.json`);
+const people = existsSync(memo) ? JSON.parse(readFileSync(memo, 'utf8')) : {};
 for (const name of ['Ada', 'Bola']) {
+  if (people[name]) {
+    console.log(`  ${name} is already in`);
+    continue;
+  }
   const session = await call('POST', `/v1/rooms/${code}/viewers`, { name, clockSource: 'manual' });
   people[name] = session.token;
   console.log(`  ${name} joined`);
+}
+writeFileSync(memo, JSON.stringify(people));
+
+// Both friends called it before kick-off (predictions lock a minute into each person's match).
+const CALLS = { Ada: { home: 3, away: 1 }, Bola: { home: 2, away: 2 } };
+for (const [name, score] of Object.entries(CALLS)) {
+  await call('POST', `/v1/rooms/${code}/predictions`, score, people[name]).catch(() => undefined);
+  console.log(`  ${name} called ${score.home}–${score.away}`);
 }
 
 const clock = (sec) => `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(2, '0')}`;

@@ -6,6 +6,7 @@ import { getSport, type ReactionBody, type RoomStateDto } from '@delayed-reactio
 import { useCallback } from 'react';
 import { Wordmark } from '@/components/ui/logo';
 import { useToast } from '@/components/ui/toast';
+import { CallIt } from './call-it';
 import { ClockBar } from './clock-bar';
 import { ConnectionStatus } from './connection-status';
 import { Feed } from './feed';
@@ -84,6 +85,15 @@ export function RoomLive({
       {needsKickoff ? (
         <main className="mx-auto w-full max-w-md flex-1 px-4 pt-8 pb-16 sm:pt-14">
           <SyncPanel sport={sport} clock={clock!} />
+          <div className="mt-8">
+            <CallIt
+              session={session}
+              title={room.room.title}
+              viewers={viewers}
+              playhead={playhead.position}
+              hasCatalogResult={room.room.programId !== null}
+            />
+          </div>
         </main>
       ) : (
         <main className="mx-auto grid w-full max-w-6xl flex-1 grid-rows-[auto_1fr] gap-x-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:grid-rows-1 lg:pt-8">
@@ -101,6 +111,13 @@ export function RoomLive({
               playhead={playhead.position}
               sport={sport}
               serverNow={engine?.serverNow() ?? Date.now()}
+            />
+            <CallIt
+              session={session}
+              title={room.room.title}
+              viewers={viewers}
+              playhead={playhead.position}
+              hasCatalogResult={room.room.programId !== null}
             />
             <Moments session={session} sport={sport} viewers={viewers} />
             <Feed

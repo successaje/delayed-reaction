@@ -1,6 +1,12 @@
 import {
   addMs,
   buildRecap,
+  canPredict,
+  compare,
+  predictRequestSchema,
+  resultRequestSchema,
+  type MatchPosition,
+  type PredictionsDto,
   clampUntil,
   PRE_MATCH,
   type Recap,
@@ -198,6 +204,74 @@ export class RoomService {
       afterSeq: 0,
     });
     return buildRecap(reactions.map(toReactionDto), until);
+  }
+
+  /**
+   * Everyone's predictions, plus the final score only if this viewer has reached the point
+   * where it was decided.
+   */
+  async predictions({ room, viewer }: AuthedViewer): Promise<PredictionsDto> {
+    const at = (await this.deps.store.getViewer(room.code, viewer.id))?.report?.position ?? null;
+    const [predictions, result] = await Promise.all([
+      this.deps.store.listPredictions(room.code),
+      this.finalScore(room),
+    ]);
+    const reached = result !== null && at !== null && compare(at, result.position) >= 0;
+    return {
+      predictions,
+      result: reached ? { home: result.home, away: result.away } : null,
+      open: canPredict(at),
+    };
+  }
+
+  async predict({ room, viewer }: AuthedViewer, input: unknown): Promise<PredictionsDto> {
+    const score = predictRequestSchema.parse(input);
+    const at = (await this.deps.store.getViewer(room.code, viewer.id))?.report?.position ?? null;
+    if (!canPredict(at)) {
+      throw new ApiError('invalid_request', 'Predictions closed a minute into your match. Next game!');
+    }
+    await this.deps.store.putPrediction(room.code, {
+      viewerId: viewer.id,
+      home: score.home,
+      away: score.away,
+      createdAt: this.deps.now(),
+    });
+    return this.predictions({ room, viewer });
+  }
+
+  /**
+   * Records the final score for matches outside the catalog. Only someone in the second period
+   * or later can enter it, and it's pinned to where they are, so later viewers only see it
+   * once they get there too.
+   */
+  async setResult({ room, viewer }: AuthedViewer, input: unknown): Promise<PredictionsDto> {
+    const score = resultRequestSchema.parse(input);
+    if (this.catalogResult(room)) {
+      throw new ApiError('invalid_request', 'This match already has its final score.');
+    }
+    const at = (await this.deps.store.getViewer(room.code, viewer.id))?.report?.position ?? null;
+    if (!at || at.period < 2) {
+      throw new ApiError('invalid_request', 'You can add the final score once you reach the second half.');
+    }
+    await this.deps.store.setResult(room.code, { ...score, position: at, setBy: viewer.id });
+    return this.predictions({ room, viewer });
+  }
+
+  private async finalScore(
+    room: StoredRoom,
+  ): Promise<{ home: number; away: number; position: MatchPosition } | null> {
+    return this.catalogResult(room) ?? (await this.deps.store.getResult(room.code));
+  }
+
+  /** A catalog program's known result, decided at the end of its media. */
+  private catalogResult(room: StoredRoom) {
+    const program = room.programId ? this.findProgram(room.programId) : undefined;
+    if (!program?.result) return null;
+    const last = program.markers[program.markers.length - 1]!;
+    return {
+      ...program.result,
+      position: { period: last.period, ms: Math.max(0, program.durationMs - last.mediaMs - 1_000) },
+    };
   }
 
   async postReaction(
