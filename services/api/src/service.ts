@@ -4,6 +4,8 @@ import {
   canPredict,
   compare,
   predictRequestSchema,
+  shareRequestSchema,
+  type SharedMomentDto,
   resultRequestSchema,
   type MatchPosition,
   type PredictionsDto,
@@ -36,6 +38,10 @@ import type { RoomStore, StoredReaction, StoredRoom, StoredViewer } from './stor
 
 export const MAX_VIEWERS = 50;
 const ROOM_TTL_SECONDS = 7 * 24 * 60 * 60;
+/** A shared moment covers a little build-up and the reactions that followed. */
+const SHARE_BEFORE_MS = 3_000;
+const SHARE_AFTER_MS = 12_000;
+const SHARE_TTL_SECONDS = 30 * 24 * 60 * 60;
 const CODE_ATTEMPTS = 5;
 
 export interface ServiceDeps {
@@ -272,6 +278,62 @@ export class RoomService {
       ...program.result,
       position: { period: last.period, ms: Math.max(0, program.durationMs - last.mediaMs - 1_000) },
     };
+  }
+
+  /**
+   * Snapshots a moment the viewer has already watched, with the reactions around it, as a
+   * public link. Only what's in the window leaves the room.
+   */
+  async share({ room, viewer }: AuthedViewer, input: unknown): Promise<SharedMomentDto> {
+    const { position: at } = shareRequestSchema.parse(input);
+    const reached = (await this.deps.store.getViewer(room.code, viewer.id))?.report?.position ?? null;
+    if (!reached || compare(reached, at) < 0) {
+      throw new ApiError('invalid_request', "You can only share moments you've already watched.");
+    }
+    const from = { period: at.period, ms: Math.max(0, at.ms - SHARE_BEFORE_MS) };
+    const to = compare(reached, { period: at.period, ms: at.ms + SHARE_AFTER_MS }) < 0
+      ? reached
+      : { period: at.period, ms: at.ms + SHARE_AFTER_MS };
+    const [{ reactions }, viewers] = await Promise.all([
+      this.deps.store.queryReactions(room.code, {
+        afterKey: from.ms === 0 ? null : sortKey({ period: from.period, ms: from.ms - 1 }),
+        untilKey: sortKey(to),
+        afterSeq: Number.MAX_SAFE_INTEGER,
+      }),
+      this.deps.store.listViewers(room.code),
+    ]);
+    const people = new Map(viewers.map((v) => [v.id, v]));
+    const program = room.programId ? this.findProgram(room.programId) : undefined;
+    const marker = program?.markers.find((m) => m.period === at.period);
+    const now = this.deps.now();
+    const share: SharedMomentDto = {
+      id: newId(),
+      title: room.title,
+      sport: room.sport,
+      position: at,
+      media:
+        program && marker
+          ? { url: program.mediaUrl, posterUrl: program.posterUrl, momentMs: marker.mediaMs + at.ms }
+          : null,
+      reactions: reactions
+        .filter((r) => r.position.period === at.period)
+        .map((r) => ({
+          name: people.get(r.viewerId)?.name ?? 'A friend',
+          color: people.get(r.viewerId)?.color ?? '#8d948b',
+          offsetMs: r.position.ms - at.ms,
+          body: r.body,
+        })),
+      sharedBy: viewer.name,
+      createdAt: now,
+    };
+    await this.deps.store.putShare(share, Math.floor(now / 1000) + SHARE_TTL_SECONDS);
+    return share;
+  }
+
+  async getShare(id: string): Promise<SharedMomentDto> {
+    const share = /^[a-z0-9]{12}$/.test(id) ? await this.deps.store.getShare(id) : null;
+    if (!share) throw new ApiError('room_not_found', 'That moment link has expired or never existed.');
+    return share;
   }
 
   async postReaction(

@@ -96,6 +96,14 @@ export function createApp(options: AppOptions) {
     return c.json(await service.setResult(authed, await c.req.json()));
   });
 
+  v1.post('/rooms/:code/shares', async (c) => {
+    const authed = await service.authenticate(roomCode(c), c.req.header('Authorization'));
+    limit(createLimit, authed.viewer.id);
+    return c.json(await service.share(authed, await c.req.json()), 201);
+  });
+
+  v1.get('/shares/:id', async (c) => c.json(await service.getShare(c.req.param('id'))));
+
   v1.post('/rooms/:code/reactions', async (c) => {
     const authed = await service.authenticate(roomCode(c), c.req.header('Authorization'));
     limit(reactionLimit, authed.viewer.id);
