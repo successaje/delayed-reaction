@@ -11,6 +11,7 @@ export const program: ProgramDto = {
   posterUrl: null,
   durationMs: 600_000,
   markers: [{ period: 1, mediaMs: 0 }],
+  result: { home: 5, away: 2 },
   credit: { author: 'Test', license: 'CC0', sourceUrl: 'https://example.com' },
 };
 

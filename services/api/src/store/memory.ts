@@ -1,5 +1,7 @@
 import { sortKey, type PositionReport } from '@delayed-reaction/core';
 import type {
+  StoredPrediction,
+  StoredResult,
   ReactionQuery,
   ReactionQueryResult,
   RoomStore,
@@ -12,6 +14,8 @@ interface RoomRecord {
   room: StoredRoom;
   viewers: Map<string, StoredViewer>;
   reactions: Map<string, StoredReaction>;
+  predictions: Map<string, StoredPrediction>;
+  result: StoredResult | null;
   seq: number;
 }
 
@@ -25,6 +29,8 @@ export class MemoryRoomStore implements RoomStore {
       room,
       viewers: new Map([[host.id, host]]),
       reactions: new Map(),
+      predictions: new Map(),
+      result: null,
       seq: 0,
     });
     return true;
@@ -79,6 +85,25 @@ export class MemoryRoomStore implements RoomStore {
       })
       .sort((a, b) => sortKey(a.position).localeCompare(sortKey(b.position)) || a.seq - b.seq);
     return { reactions, seenSeq: record.seq };
+  }
+
+  async putPrediction(code: string, prediction: StoredPrediction): Promise<void> {
+    this.require(code).predictions.set(prediction.viewerId, prediction);
+  }
+
+  async listPredictions(code: string): Promise<StoredPrediction[]> {
+    const record = this.rooms.get(code);
+    return record ? [...record.predictions.values()].sort((a, b) => a.createdAt - b.createdAt) : [];
+  }
+
+  async getResult(code: string): Promise<StoredResult | null> {
+    return this.rooms.get(code)?.result ?? null;
+  }
+
+  async setResult(code: string, result: StoredResult): Promise<StoredResult> {
+    const record = this.require(code);
+    record.result ??= result;
+    return record.result;
   }
 
   private require(code: string): RoomRecord {

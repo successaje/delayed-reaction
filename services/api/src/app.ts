@@ -79,6 +79,23 @@ export function createApp(options: AppOptions) {
     return c.json(await service.recap(authed));
   });
 
+  v1.get('/rooms/:code/predictions', async (c) => {
+    const authed = await service.authenticate(roomCode(c), c.req.header('Authorization'));
+    return c.json(await service.predictions(authed));
+  });
+
+  v1.post('/rooms/:code/predictions', async (c) => {
+    const authed = await service.authenticate(roomCode(c), c.req.header('Authorization'));
+    limit(reactionLimit, authed.viewer.id);
+    return c.json(await service.predict(authed, await c.req.json()));
+  });
+
+  v1.post('/rooms/:code/result', async (c) => {
+    const authed = await service.authenticate(roomCode(c), c.req.header('Authorization'));
+    limit(reactionLimit, authed.viewer.id);
+    return c.json(await service.setResult(authed, await c.req.json()));
+  });
+
   v1.post('/rooms/:code/reactions', async (c) => {
     const authed = await service.authenticate(roomCode(c), c.req.header('Authorization'));
     limit(reactionLimit, authed.viewer.id);

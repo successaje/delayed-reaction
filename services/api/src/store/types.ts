@@ -42,6 +42,21 @@ export interface StoredReaction {
   readonly seq: number;
 }
 
+export interface StoredPrediction {
+  readonly viewerId: string;
+  readonly home: number;
+  readonly away: number;
+  readonly createdAt: number;
+}
+
+/** A final score entered by someone who watched to the end, pinned to where they were. */
+export interface StoredResult {
+  readonly home: number;
+  readonly away: number;
+  readonly position: MatchPosition;
+  readonly setBy: string;
+}
+
 export interface ReactionQuery {
   /** Serve reactions positioned after this sort key (exclusive); null for "from the start". */
   readonly afterKey: string | null;
@@ -79,4 +94,10 @@ export interface RoomStore {
     reaction: Omit<StoredReaction, 'seq'>,
   ): Promise<{ reaction: StoredReaction; created: boolean }>;
   queryReactions(code: string, query: ReactionQuery): Promise<ReactionQueryResult>;
+  /** Creates or replaces this viewer's prediction. */
+  putPrediction(code: string, prediction: StoredPrediction): Promise<void>;
+  listPredictions(code: string): Promise<StoredPrediction[]>;
+  getResult(code: string): Promise<StoredResult | null>;
+  /** First result wins; returns the stored one either way. */
+  setResult(code: string, result: StoredResult): Promise<StoredResult>;
 }

@@ -1,4 +1,4 @@
-import { position, sortKey } from '@delayed-reaction/core';
+import { generateRoomCode, position, sortKey } from '@delayed-reaction/core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { DynamoRoomStore } from '../src/store/dynamo';
 import { MemoryRoomStore } from '../src/store/memory';
@@ -19,8 +19,8 @@ const factories: Array<[string, () => RoomStore]> = [
   ['dynamodb', () => new DynamoRoomStore(dynamo.table, dynamo.client, 0)],
 ];
 
-let n = 0;
-const code = () => `T${String(++n).padStart(5, '2').replace(/[01]/g, '2')}`;
+// Every test gets its own room on the shared table.
+const code = () => generateRoomCode((len) => crypto.getRandomValues(new Uint8Array(len)));
 
 function room(c: string): StoredRoom {
   return { code: c, title: 'Test', sport: 'football', programId: null, hostId: 'host00000001', createdAt: 1, expiresAt: 9_999_999_999 };
@@ -36,7 +36,7 @@ describe.each(factories)('%s store', (_name, make) => {
     expect(await store.createRoom(room(c), viewer(c, 'host00000001'))).toBe(true);
     expect(await store.createRoom(room(c), viewer(c, 'host00000002'))).toBe(false);
     expect((await store.getRoom(c))?.title).toBe('Test');
-    expect(await store.getRoom('NOPE22')).toBeNull();
+    expect(await store.getRoom('ZZZZZZ')).toBeNull();
   });
 
   it('adds viewers up to the limit and lists them in join order', async () => {
@@ -100,5 +100,22 @@ describe.each(factories)('%s store', (_name, make) => {
       afterSeq: next.seenSeq,
     });
     expect(ahead.reactions.map((r) => r.id)).toEqual(['ahead-0003']);
+  });
+
+  it('upserts predictions and keeps the first result', async () => {
+    const store = make();
+    const c = code();
+    await store.createRoom(room(c), viewer(c, 'host00000001'));
+    await store.putPrediction(c, { viewerId: 'host00000001', home: 1, away: 0, createdAt: 1 });
+    await store.putPrediction(c, { viewerId: 'host00000001', home: 2, away: 1, createdAt: 2 });
+    await store.putPrediction(c, { viewerId: 'viewer000002', home: 0, away: 0, createdAt: 3 });
+    expect((await store.listPredictions(c)).map((p) => [p.viewerId, p.home, p.away])).toEqual([
+      ['host00000001', 2, 1],
+      ['viewer000002', 0, 0],
+    ]);
+    expect(await store.getResult(c)).toBeNull();
+    const first = { home: 5, away: 2, position: position(2, 2_700_000), setBy: 'host00000001' };
+    expect(await store.setResult(c, first)).toEqual(first);
+    expect(await store.setResult(c, { ...first, home: 9, setBy: 'viewer000002' })).toEqual(first);
   });
 });
