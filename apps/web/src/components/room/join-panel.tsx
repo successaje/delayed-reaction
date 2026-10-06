@@ -1,7 +1,7 @@
 'use client';
 
 import { isApiClientError } from '@delayed-reaction/client';
-import { joinRoomRequestSchema, type RoomStateDto } from '@delayed-reaction/core';
+import { getSport, joinRoomRequestSchema, type RoomStateDto } from '@delayed-reaction/core';
 import { useEffect, useState, type FormEvent } from 'react';
 import { PageTitle } from '@/components/app-shell';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,7 @@ export function JoinPanel({
 }) {
   const tv = room.viewers.find((v) => v.id === linkToTv && v.clockSource === 'player') ?? null;
   const people = room.viewers.filter((v) => v.clockSource !== 'linked');
+  const cue = getSport(room.room.sport).startCue;
   const [name, setName] = useState('');
   const [followTv, setFollowTv] = useState(Boolean(tv));
   const [error, setError] = useState<string | null>(null);
@@ -93,7 +94,7 @@ export function JoinPanel({
               checked={!followTv}
               onSelect={() => setFollowTv(false)}
               title="I'm watching on another screen"
-              detail="You'll tap once at kick-off to set your own clock."
+              detail={`You'll tap once at ${cue} to set your own clock.`}
             />
           </fieldset>
         )}
@@ -103,7 +104,7 @@ export function JoinPanel({
         </Button>
         {!tv && (
           <p className="text-center text-xs text-chalk-3">
-            Next, you'll tap once at kick-off so your reactions are timed to the match.
+            Next, you'll tap once at {cue} so your reactions are timed to the match.
           </p>
         )}
       </form>
