@@ -135,6 +135,8 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md):
 
 Demo footage is the 2021 FIFA Beach Soccer World Cup final, filmed from the stands by **Voltmetro** and released under **CC0** on [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:2021_FIFA_Beach_Soccer_World_Cup_Final).
 
+Crowd sounds: the cheer is from *Football Austria vs. Sweden* by Work With Sounds / Torsten Nilsson ([CC BY 4.0](https://commons.wikimedia.org/wiki/File:WWS_FootballAustriavs.Sweden.ogg)); the groan is *Ohhh ahhh* by starlite (public domain, via Wikimedia Commons).
+
 ## License
 
 [MIT](LICENSE)

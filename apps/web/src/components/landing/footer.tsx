@@ -30,7 +30,7 @@ export function Footer() {
           >
             CC0 on Wikimedia Commons
           </a>
-          . Built for Amazon's Build, Ship, Shape hackathon.
+          . Crowd sounds: Work With Sounds / Torsten Nilsson (CC BY 4.0) and starlite (public domain). Built for Amazon's Build, Ship, Shape hackathon.
         </p>
         <nav className="flex gap-5">
           <Link href="/join" className="hover:text-chalk-2">
