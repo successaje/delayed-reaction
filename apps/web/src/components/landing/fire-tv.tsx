@@ -34,8 +34,9 @@ export function FireTv() {
             flooding the screen.
           </p>
           <p className="mt-4 text-chalk-2">
-            Scan the code on the TV and your phone becomes the reaction pad, already in sync. Nothing
-            to set up, nothing to install.
+            React straight from the remote: press ▲, pick a word, press OK. Or scan the code on the TV
+            and your phone becomes the reaction pad, already in sync. Nothing to set up, nothing to
+            install.
           </p>
           <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-line pt-6 text-sm">
             <div>

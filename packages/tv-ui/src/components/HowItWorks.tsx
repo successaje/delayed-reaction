@@ -3,7 +3,7 @@ import { color, radius, space, type } from '../theme';
 
 const STEPS = [
   { n: '1', title: 'Pick a game', body: 'This TV opens a room and shows a code.' },
-  { n: '2', title: 'Scan with your phone', body: 'Your phone becomes the reaction pad, already in sync.' },
+  { n: '2', title: 'React from the sofa', body: 'Press ▲ on the remote, or scan to make your phone the pad.' },
   { n: '3', title: 'Friends react whenever', body: 'Live or hours later, each reaction lands on its moment.' },
 ];
 

@@ -119,9 +119,10 @@ export function LobbyScreen({
 
         <View style={styles.qrPanel}>
           <QrCode value={joinUrl} size={380} />
-          <Text style={[type.heading, { color: color.chalk, marginTop: space.md }]}>React from your phone</Text>
+          <Text style={[type.heading, { color: color.chalk, marginTop: space.md }]}>React from the sofa</Text>
           <Text style={[type.label, { color: color.chalk2, fontWeight: '400', textAlign: 'center' }]}>
-            Scan to join. Your phone follows this TV's clock, so there's nothing to set up.
+            Press ▲ on the remote while you watch, or scan to react from your phone. It follows this
+            TV's clock, so there's nothing to set up.
           </Text>
         </View>
       </View>
