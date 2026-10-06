@@ -99,9 +99,35 @@ export const programSchema = z.object({
     license: z.string().min(1),
     sourceUrl: z.string().url(),
   }),
+  /** The final score, if known. Revealed to each viewer only when they reach the end. */
+  result: z.object({ home: z.number().int().min(0), away: z.number().int().min(0) }).optional(),
 });
 
 export type ProgramDto = z.infer<typeof programSchema>;
+
+const goals = z.number().int().min(0).max(99);
+
+export const predictRequestSchema = z.object({ home: goals, away: goals });
+export const resultRequestSchema = z.object({ home: goals, away: goals });
+
+export type PredictRequest = z.input<typeof predictRequestSchema>;
+export type ResultRequest = z.input<typeof resultRequestSchema>;
+
+export interface PredictionDto {
+  readonly viewerId: string;
+  readonly home: number;
+  readonly away: number;
+  readonly createdAt: number;
+}
+
+export interface PredictionsDto {
+  /** Everyone's predictions: safe to show, since they were all locked before anyone saw a kick. */
+  readonly predictions: readonly PredictionDto[];
+  /** The final score, or null until this viewer reaches the point where it was decided. */
+  readonly result: { readonly home: number; readonly away: number } | null;
+  /** Whether this viewer can still predict (their own clock is before the lock). */
+  readonly open: boolean;
+}
 
 // ---- Responses -------------------------------------------------------------------------------
 
