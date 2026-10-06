@@ -201,3 +201,27 @@ export type ApiErrorCode =
   | 'unauthorized'
   | 'rate_limited'
   | 'internal';
+
+// ---- Shared moments ----------------------------------------------------------------------------
+
+export const shareRequestSchema = z.object({ position: matchPositionSchema });
+export type ShareRequest = z.input<typeof shareRequestSchema>;
+
+/** A snapshot of one moment, safe to show to anyone with the link. */
+export interface SharedMomentDto {
+  readonly id: string;
+  readonly title: string;
+  readonly sport: SportId;
+  readonly position: z.infer<typeof matchPositionSchema>;
+  /** For catalog matches: where to play from, and the media time of the moment. */
+  readonly media: { readonly url: string; readonly posterUrl: string | null; readonly momentMs: number } | null;
+  readonly reactions: readonly {
+    readonly name: string;
+    readonly color: string;
+    /** Offset from the moment, in ms (negative = before). */
+    readonly offsetMs: number;
+    readonly body: ReactionDto['body'];
+  }[];
+  readonly sharedBy: string;
+  readonly createdAt: number;
+}
