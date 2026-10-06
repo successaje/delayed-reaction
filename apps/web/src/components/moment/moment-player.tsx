@@ -1,6 +1,6 @@
 'use client';
 
-import { reactionLabel, type SharedMomentDto } from '@delayed-reaction/core';
+import { formatPosition, getSport, reactionLabel, type SharedMomentDto } from '@delayed-reaction/core';
 import { useEffect, useRef, useState } from 'react';
 import { cx } from '@/lib/cx';
 
@@ -65,7 +65,19 @@ export function MomentPlayer({ share }: { share: SharedMomentDto }) {
           className="aspect-video w-full object-cover"
         />
       ) : (
-        <div className="aspect-video w-full bg-[radial-gradient(120%_80%_at_50%_100%,#1f3a26,#0a0c0b)]" />
+        // No footage: a scoreboard with the match clock running through the moment, so the
+        // reactions still read as landing on a time.
+        <div className="flex aspect-video w-full flex-col items-start gap-1 bg-[radial-gradient(120%_80%_at_50%_100%,#1f3a26,#0a0c0b)] p-4 sm:p-6">
+          <p className="max-w-full truncate text-xs font-semibold tracking-[0.18em] text-chalk-3 uppercase">
+            {share.title}
+          </p>
+          <p className="font-mono text-2xl text-chalk tabular sm:text-4xl" aria-hidden>
+            {formatPosition(
+              { period: share.position.period, ms: Math.max(0, share.position.ms + offset) },
+              getSport(share.sport),
+            )}
+          </p>
+        </div>
       )}
       {!started && share.media && (
         <button
