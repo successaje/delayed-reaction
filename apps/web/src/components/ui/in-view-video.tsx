@@ -11,6 +11,7 @@ export function InViewVideo(props: Omit<ComponentPropsWithoutRef<'video'>, 'auto
   useEffect(() => {
     const video = ref.current;
     if (!video || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    video.muted = true; // see moment-player: the attribute isn't always reflected after SSR
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) void video.play().catch(() => undefined);
