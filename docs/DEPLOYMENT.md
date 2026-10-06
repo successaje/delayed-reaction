@@ -12,7 +12,7 @@ Prerequisites:
 
 ```bash
 corepack enable && yarn install
-scripts/fetch-demo-media.sh                          # builds the CC0 demo program into apps/web/public/media
+scripts/fetch-demo-media.sh                          # builds the two demo programs into apps/web/public/media
 yarn workspace @delayed-reaction/infra cdk bootstrap # once per account and region
 yarn workspace @delayed-reaction/infra deploy -c webOrigin=https://<your-vercel-domain>
 ```

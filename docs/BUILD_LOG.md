@@ -17,6 +17,7 @@
 | 2026-10-03 | TV home how-it-works panel | #12 |
 | 2026-10-03 | Demo video plan and submission draft | #13 |
 | 2026-10-06 | React from the TV remote: ▲ opens a reaction tray pinned to the TV's playhead | #25 |
+| 2026-10-06 | Second demo match: Hawai'i v Northern Arizona college basketball (two halves), with on-screen footage credit | #26 |
 
 ## Next
 
