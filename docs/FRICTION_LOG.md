@@ -100,7 +100,23 @@ Severity:
   - accept the `.png` extension, or document the extensionless name;
   - make the build fail on the icon warning, instead of producing a package the device rejects.
 
-### 13. `vega project doctor` is excellent. *(positive)*
+### 13. `AudioPlayer.play()` before the media is ready fails silently. *(Medium)*
+
+- **Tried:** playing a short sound effect (a crowd cheer) with a second W3C `AudioPlayer` (`CONTENT_TYPE_SONIFICATION`) alongside the video.
+- **Happened:** no sound and no error. The same code plays in the browser. Resetting `currentTime` and calling `play()` before `canplay`/`loadeddata` did nothing on Vega. Once we waited for readiness, it played alongside the video with no loss of audio focus.
+- **Would help:**
+  - reject the `play()` promise, or emit `error`, when the media isn't ready;
+  - a short "sound effects over video" section in the W3C media docs, covering which content type and usage to pick and how audio focus behaves.
+
+### 14. Info logs are suppressed exactly when you need them. *(Medium)*
+
+- **Happened:** at playback start, the media stack logs more than 300 lines a second. The device then suppresses the app's info-level logs for a few seconds, hiding our `console.info` diagnostics at the moment we were debugging.
+- **Workaround:** log diagnostics with `console.warn`.
+- **Would help:**
+  - exempt the app's JavaScript console from the media stack's budget;
+  - or document the limit next to `vega device start-log-stream`.
+
+### 15. `vega project doctor` is excellent. *(positive)*
 
 - In one command it validated the manifest, OS versions, dependency alignment against the OS profile, deprecated APIs and VPT rules, and gave the exact fix for each.
 - It would help even more if `vega build` suggested running it when it fails.
