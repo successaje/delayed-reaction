@@ -3,6 +3,8 @@
 import type { SavedSession } from '@delayed-reaction/client';
 import { formatPosition, reactionLabel, type Recap, type Sport, type ViewerDto } from '@delayed-reaction/core';
 import { useCallback, useEffect, useState } from 'react';
+import { useToast } from '@/components/ui/toast';
+import type { MatchPosition } from '@delayed-reaction/core';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api';
 
@@ -38,6 +40,27 @@ export function Moments({
   }, [open, load]);
 
   const names = new Map(viewers.map((v) => [v.id, v]));
+  const toast = useToast();
+  const [sharing, setSharing] = useState<string | null>(null);
+
+  async function share(position: MatchPosition) {
+    const key = `${position.period}:${position.ms}`;
+    setSharing(key);
+    try {
+      const moment = await api.share(session.roomCode, session.token, { position });
+      const url = `${window.location.origin}/m/${moment.id}`;
+      if (typeof navigator.share === 'function') {
+        await navigator.share({ title: 'Delayed Reaction', text: 'This moment.', url }).catch(() => undefined);
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast.show({ title: 'Link copied', detail: 'It plays the moment with everyone’s reactions.', tone: 'success' });
+      }
+    } catch {
+      toast.show({ title: "Couldn't share that", detail: 'Try again in a moment.', tone: 'error' });
+    } finally {
+      setSharing(null);
+    }
+  }
 
   return (
     <section className="rounded-lg border border-line bg-ink-900">
@@ -73,7 +96,7 @@ export function Moments({
           {recap && recap.moments.length > 0 && (
             <ol className="flex flex-col gap-3">
               {recap.moments.map((moment) => (
-                <li key={`${moment.position.period}:${moment.position.ms}`} className="flex gap-4">
+                <li key={`${moment.position.period}:${moment.position.ms}`} className="flex items-start gap-4">
                   <span className="w-20 shrink-0 font-mono text-xs text-amber tabular">
                     {formatPosition(moment.position, sport)}
                   </span>
@@ -91,6 +114,15 @@ export function Moments({
                       ))}
                     </p>
                   </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="ml-auto shrink-0"
+                    busy={sharing === `${moment.position.period}:${moment.position.ms}`}
+                    onClick={() => share(moment.position)}
+                  >
+                    Share
+                  </Button>
                 </li>
               ))}
             </ol>

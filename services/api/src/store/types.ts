@@ -1,4 +1,5 @@
 import type {
+  SharedMomentDto,
   ClockSource,
   MatchPosition,
   PositionReport,
@@ -100,4 +101,7 @@ export interface RoomStore {
   getResult(code: string): Promise<StoredResult | null>;
   /** First result wins; returns the stored one either way. */
   setResult(code: string, result: StoredResult): Promise<StoredResult>;
+  /** Shared moments live outside rooms, so links keep working after a room closes. */
+  putShare(share: SharedMomentDto, expiresAt: number): Promise<void>;
+  getShare(id: string): Promise<SharedMomentDto | null>;
 }

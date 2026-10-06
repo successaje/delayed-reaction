@@ -1,4 +1,4 @@
-import { sortKey, type PositionReport } from '@delayed-reaction/core';
+import { sortKey, type PositionReport, type SharedMomentDto } from '@delayed-reaction/core';
 import type {
   StoredPrediction,
   StoredResult,
@@ -22,6 +22,15 @@ interface RoomRecord {
 /** In-process store. Single-threaded, so every operation is trivially atomic. */
 export class MemoryRoomStore implements RoomStore {
   private readonly rooms = new Map<string, RoomRecord>();
+  private readonly shares = new Map<string, SharedMomentDto>();
+
+  async putShare(share: SharedMomentDto): Promise<void> {
+    this.shares.set(share.id, share);
+  }
+
+  async getShare(id: string): Promise<SharedMomentDto | null> {
+    return this.shares.get(id) ?? null;
+  }
 
   async createRoom(room: StoredRoom, host: StoredViewer): Promise<boolean> {
     if (this.rooms.has(room.code)) return false;

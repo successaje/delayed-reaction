@@ -7,6 +7,8 @@ import type {
   PredictRequest,
   PredictionsDto,
   ResultRequest,
+  SharedMomentDto,
+  ShareRequest,
   ProgramDto,
   Recap,
   ReactionDto,
@@ -99,6 +101,14 @@ export class ApiClient {
 
   setResult(code: string, token: string, body: ResultRequest): Promise<PredictionsDto> {
     return this.request('POST', `/v1/rooms/${encodeURIComponent(code)}/result`, { body, token });
+  }
+
+  share(code: string, token: string, body: ShareRequest): Promise<SharedMomentDto> {
+    return this.request('POST', `/v1/rooms/${encodeURIComponent(code)}/shares`, { body, token });
+  }
+
+  getShare(id: string): Promise<SharedMomentDto> {
+    return this.request('GET', `/v1/shares/${encodeURIComponent(id)}`);
   }
 
   postReaction(

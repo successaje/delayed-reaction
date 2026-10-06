@@ -118,4 +118,21 @@ describe.each(factories)('%s store', (_name, make) => {
     expect(await store.setResult(c, first)).toEqual(first);
     expect(await store.setResult(c, { ...first, home: 9, setBy: 'viewer000002' })).toEqual(first);
   });
+
+  it('stores and reads shared moments by id', async () => {
+    const store = make();
+    const share = {
+      id: 'abcdefgh2345',
+      title: 'RFU v Japan',
+      sport: 'football' as const,
+      position: position(1, 5_800),
+      media: null,
+      reactions: [{ name: 'Ada', color: '#fff', offsetMs: 0, body: { kind: 'quick' as const, value: 'no' as const } }],
+      sharedBy: 'Ada',
+      createdAt: 1,
+    };
+    await store.putShare(share, 9_999_999_999);
+    expect(await store.getShare(share.id)).toEqual(share);
+    expect(await store.getShare('missing00000')).toBeNull();
+  });
 });

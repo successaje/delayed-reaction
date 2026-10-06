@@ -7,7 +7,7 @@ import {
   UpdateCommand,
   type QueryCommandInput,
 } from '@aws-sdk/lib-dynamodb';
-import { sortKey, type PositionReport } from '@delayed-reaction/core';
+import { sortKey, type PositionReport, type SharedMomentDto } from '@delayed-reaction/core';
 import type {
   StoredPrediction,
   StoredResult,
@@ -29,6 +29,7 @@ import type {
  *   ROOM#<code>   RXID#<id>                   idempotency guard pointing at the reaction's SK
  *   ROOM#<code>   PRED#<viewerId>             "Call it" prediction
  *   ROOM#<code>   RESULT                      final score, first writer wins
+ *   SHARE#<id>    META                        a shared moment snapshot (outlives its room)
  *
  *   GSI1: GSI1PK = ROOM#<code>, GSI1SK = seq  (reactions by insertion order)
  *
@@ -293,6 +294,22 @@ export class DynamoRoomStore implements RoomStore {
       if (!(error instanceof ConditionalCheckFailedException)) throw error;
       return (await this.getResult(code))!;
     }
+  }
+
+  async putShare(share: SharedMomentDto, expiresAt: number): Promise<void> {
+    await this.doc.send(
+      new PutCommand({
+        TableName: this.table,
+        Item: { PK: `SHARE#${share.id}`, SK: 'META', share, expiresAt },
+      }),
+    );
+  }
+
+  async getShare(id: string): Promise<SharedMomentDto | null> {
+    const { Item } = await this.doc.send(
+      new GetCommand({ TableName: this.table, Key: { PK: `SHARE#${id}`, SK: 'META' } }),
+    );
+    return (Item?.share as SharedMomentDto | undefined) ?? null;
   }
 
   private async putViewer(viewer: StoredViewer, expiresAt: number): Promise<void> {
