@@ -7,10 +7,13 @@
 - **Devices:** the Vega Virtual Device (or a Fire TV Stick 4K Select) running the release build, pointed at the deployed API.
 - **Phones:** two. Phone A is "Ada" watching live; phone B is linked to the TV.
 - **Seed room:**
-  1. On the TV, start the demo match.
-  2. Run `node scripts/seed-demo.mjs <ROOM_CODE>` (the code shown in the lobby).
+  1. On the TV, start either demo match.
+  2. Run `node scripts/seed-demo.mjs <ROOM_CODE>` (the code shown in the lobby). The script reads the room's match and uses its own set of reactions.
+  3. Wait a minute before pressing play. Reactions posted in the last 30 seconds count as fresh replies, so skipping past them would tag them "replied later".
 
-  Ada and Bola join as friends who already watched. Their reactions are pinned to the penalty (0:05), the nervy spell (0:30), a refereeing call (0:47), the winning celebrations (1:06) and full time (1:40). The script is safe to run twice.
+  Ada and Bola join as friends who already watched. The script is safe to run twice.
+  - **Beach soccer:** the penalty (1H 0:05), the nervy spell (0:30), a refereeing call (0:47), the winning celebrations (1:06) and full time (1:40). Calls: 3–1 and 2–2.
+  - **Basketball:** a shot at the rim (1H 0:12), the drive through the defence (1:08), half time (1:36), the bench going up (2H 0:58), the three (1:13) and the buzzer (1:44). Calls: 80–70 (right result) and 74–77.
 - **Recording:** a screen recording of the TV output plus phone screen recordings, composited side by side.
 
 ## Script
