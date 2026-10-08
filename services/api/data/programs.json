@@ -22,8 +22,8 @@
     "sport": "college-basketball",
     "mediaUrl": "hawaii-nau-2018.mp4",
     "posterUrl": "hawaii-nau-2018.jpg",
-    "durationMs": 215188,
-    "markers": [{ "period": 1, "mediaMs": 0 }, { "period": 2, "mediaMs": 101100 }],
+    "durationMs": 210688,
+    "markers": [{ "period": 1, "mediaMs": 0 }, { "period": 2, "mediaMs": 98066 }],
     "result": { "home": 85, "away": 68 },
     "credit": {
       "author": "Warrior Insider",
