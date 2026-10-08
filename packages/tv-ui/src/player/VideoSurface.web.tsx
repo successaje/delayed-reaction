@@ -1,9 +1,9 @@
-import { createElement, useEffect, useRef } from 'react';
+import { memo, createElement, useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { MediaController, VideoSurfaceProps } from './types';
 
 /** Browser build: a plain <video> element inside the React Native Web tree. */
-export function VideoSurface({ uri, posterUri, onController, onStatus }: VideoSurfaceProps) {
+function Surface({ uri, posterUri, onController, onStatus }: VideoSurfaceProps) {
   // Browsers have no system media session wired up here; kickoffMs and onExternalCommand are Vega-only.
   const ref = useRef<HTMLVideoElement | null>(null);
 
@@ -53,3 +53,9 @@ export function VideoSurface({ uri, posterUri, onController, onStatus }: VideoSu
     </View>
   );
 }
+
+/**
+ * Memoised: the player's overlay re-renders four times a second for the clock, and the video
+ * surface must not re-render with it (each render costs frames on a Fire TV Stick).
+ */
+export const VideoSurface = memo(Surface);

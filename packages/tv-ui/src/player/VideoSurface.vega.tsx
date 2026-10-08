@@ -3,7 +3,7 @@ import {
   VideoPlayer,
 } from '@amazon-devices/react-native-w3cmedia';
 import { useKeplerAppStateManager } from '@amazon-devices/react-native-kepler';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { MatchMediaControls } from './media-controls.vega';
 import type { MediaController, VideoSurfaceProps } from './types';
@@ -12,7 +12,7 @@ import type { MediaController, VideoSurfaceProps } from './types';
  * Vega build: Amazon's W3C media pipeline. The player is created and loaded first; the native
  * surface is attached once metadata arrives, following the vega-video-sample lifecycle.
  */
-export function VideoSurface({ uri, kickoffMs, onController, onStatus, onExternalCommand }: VideoSurfaceProps) {
+function Surface({ uri, kickoffMs, onController, onStatus, onExternalCommand }: VideoSurfaceProps) {
   const playerRef = useRef<VideoPlayer | null>(null);
   const [initialized, setInitialized] = useState(false);
   // getComponentInstance() returns a new object on every render. Read it once: as an effect
@@ -98,3 +98,9 @@ export function VideoSurface({ uri, kickoffMs, onController, onStatus, onExterna
     </View>
   );
 }
+
+/**
+ * Memoised: the player's overlay re-renders four times a second for the clock, and the video
+ * surface must not re-render with it (each render costs frames on a Fire TV Stick).
+ */
+export const VideoSurface = memo(Surface);
