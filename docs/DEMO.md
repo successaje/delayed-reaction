@@ -21,7 +21,7 @@
 | Time | Shot | Voice-over / on-screen text |
 |---|---|---|
 | 0:00 | Black. A phone buzzes: "Ada: NO WAY he missed that". Cut to "You: 12 minutes into the recording." | "Most of us can't watch the game live. And the group chat ruins it." |
-| 0:10 | Title card: **Delayed Reaction · your group chat, on your game clock** | "Delayed Reaction pins every reaction to the match clock, not the wall clock." |
+| 0:10 | Title card: **Deract · your group chat, on your game clock** | "Deract pins every reaction to the match clock, not the wall clock." |
 | 0:18 | Phone A (Ada, live): taps **Kick-off**, then **NOOO** at the penalty. Toast: *"Tunde will see this in 38 min."* | "Ada's watching live. She reacts. She's told exactly when Tunde will see it." |
 | 0:32 | Fire TV home → *RFU v Japan* → lobby with the QR code and "Ada · 38 min ahead". | "Tunde's watching later, on Fire TV. He can see that Ada's ahead, but nothing she's said." |
 | 0:45 | Phone B scans the QR → "Follow Living room TV" → pad. | "His phone becomes the reaction pad, already synced to the TV. Nothing to set up." |

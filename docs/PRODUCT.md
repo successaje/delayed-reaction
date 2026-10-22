@@ -1,10 +1,10 @@
-# Delayed Reaction: product model
+# Deract: product model
 
 ## Thesis
 
 Live sport is social, but most people can't watch it live. They watch an hour late after the kids are asleep, on a different continent, or after a shift ends. The group chat that makes the game fun becomes the thing that spoils it.
 
-Delayed Reaction lets friends watch the same game **at different times and still watch it together**. Every reaction is pinned to the **game clock**, not the wall clock. It reaches each person's screen at the moment it happened in the game, and never before.
+Deract lets friends watch the same game **at different times and still watch it together**. Every reaction is pinned to the **game clock**, not the wall clock. It reaches each person's screen at the moment it happened in the game, and never before.
 
 > Your group chat, on your game clock.
 
@@ -26,7 +26,7 @@ Everything else serves this: rooms, sync, the reaction pad, presence and the rec
 
 Tunde starts the match 38 minutes late. At 23:14 of the first half the penalty is missed. At that frame, on his TV, Ada's reaction slides in: **"NOOO"**. She sent it 38 minutes ago.
 
-Before that, Delayed Reaction showed him only *that* his friends were ahead ("Ada is 38 min ahead"), never *what* they said.
+Before that, Deract showed him only *that* his friends were ahead ("Ada is 38 min ahead"), never *what* they said.
 
 The live side has its own small moment. When Ada reacts, her phone tells her: **"Sent. Tunde will see this in 38 min."**
 
@@ -66,7 +66,7 @@ The shared reference is **match position**: `(period, ms into period)`.
 
 ## Why Fire TV
 
-The late watch happens on the living-room TV. Vega OS gives Delayed Reaction:
+The late watch happens on the living-room TV. Vega OS gives Deract:
 - **the player's playhead**, through the W3C media APIs (`@amazon-devices/react-native-w3cmedia`), as a precise clock that survives pause and seek;
 - **Vega Media Controls**, so play/pause from the remote or Alexa keeps the clock honest;
 - **Content Launcher**, so "Alexa, watch the match with my group" lands in the right room;
