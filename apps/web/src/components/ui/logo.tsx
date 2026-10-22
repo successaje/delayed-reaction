@@ -3,7 +3,7 @@ import { cx } from '@/lib/cx';
 
 /**
  * The mark: two offset bars, the same moment on two timelines. The wordmark sets
- * "DELAYED" in amber, a beat behind "REACTION".
+ * "DE" in amber, a beat behind "RACT": Deract, short for delayed reaction.
  */
 export function Mark({ className }: { className?: string }) {
   return (
@@ -19,11 +19,11 @@ export function Wordmark({ href = '/', className }: { href?: string; className?:
     <Link
       href={href}
       className={cx('group inline-flex items-center gap-2.5 text-chalk', className)}
-      aria-label="Delayed Reaction home"
+      aria-label="Deract home"
     >
       <Mark className="transition-transform duration-300 ease-out group-hover:translate-x-0.5" />
       <span className="display text-[1.15rem] leading-none tracking-tight">
-        <span className="text-amber">Delayed</span> Reaction
+        <span className="text-amber">De</span>ract
       </span>
     </Link>
   );

@@ -4,7 +4,7 @@ import { fetchShare } from '@/lib/server-api';
 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-export const alt = 'A moment shared from Delayed Reaction';
+export const alt = 'A moment shared from Deract';
 
 /** The link preview: the match, the moment, and the group's reactions as lower-thirds. */
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
@@ -26,7 +26,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, fontSize: 30, fontWeight: 800 }}>
-          <span style={{ color: '#ffb547' }}>DELAYED</span> REACTION
+          <span style={{ color: '#ffb547' }}>DE</span>RACT
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           {reactions.map((r, i) => (
