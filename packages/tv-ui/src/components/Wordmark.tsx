@@ -11,7 +11,7 @@ export function Wordmark({ size = 28 }: { size?: number }) {
         <View style={[bar, { backgroundColor: color.amber, alignSelf: 'flex-end' }]} />
       </View>
       <Text style={[styles.text, { fontSize: size }]}>
-        <Text style={{ color: color.amber }}>DELAYED </Text>REACTION
+        <Text style={{ color: color.amber }}>DE</Text>RACT
       </Text>
     </View>
   );

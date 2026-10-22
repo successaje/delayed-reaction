@@ -29,7 +29,7 @@ export function FireTv() {
           <p className="eyebrow mb-4">Built for Fire TV</p>
           <h2 className="display text-2xl sm:text-3xl">The playhead is the clock</h2>
           <p className="mt-4 text-chalk-2">
-            On Fire TV, Delayed Reaction reads the match straight from the video player. Pause and the
+            On Fire TV, Deract reads the match straight from the video player. Pause and the
             reactions wait. Rewind and they replay. Skip ahead and they're filed away instead of
             flooding the screen.
           </p>

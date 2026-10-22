@@ -1,8 +1,8 @@
-# Delayed Reaction
+# Deract
 
 **Your group chat, on your game clock.**
 
-Watch the match an hour late and still watch it with your friends. Delayed Reaction pins every reaction to the **match clock** instead of the wall clock, so it reaches each person at the moment it happened in the game, and never before.
+Watch the match an hour late and still watch it with your friends. Deract (short for *delayed reaction*) pins every reaction to the **match clock** instead of the wall clock, so it reaches each person at the moment it happened in the game, and never before.
 
 It's a Fire TV app (Vega OS) plus a phone companion that works in any browser.
 

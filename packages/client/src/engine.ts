@@ -52,7 +52,7 @@ const OFFLINE_AFTER_FAILURES = 3;
 const POST_ATTEMPTS = 3;
 
 /**
- * Runs a device's side of Delayed Reaction: samples the playhead, syncs with the API on a
+ * Runs a device's side of Deract: samples the playhead, syncs with the API on a
  * cadence (and immediately on pause, seek or period change), and releases each reaction at
  * the moment the playhead crosses it. UI layers subscribe to events; they never poll.
  */

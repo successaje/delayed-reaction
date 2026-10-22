@@ -24,7 +24,7 @@ type Route =
   | { name: 'lobby'; session: SavedSession; program: ProgramDto }
   | { name: 'player'; session: SavedSession; program: ProgramDto };
 
-/** The Delayed Reaction TV app. Platform shells provide config (API, storage) and mount it. */
+/** The Deract TV app. Platform shells provide config (API, storage) and mount it. */
 export function DelayedReactionTV({ config }: { config: TvConfig }) {
   return (
     <TvServicesProvider config={config}>

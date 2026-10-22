@@ -19,12 +19,12 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Delayed Reaction: your group chat, on your game clock',
-    template: '%s · Delayed Reaction',
+    default: 'Deract: your group chat, on your game clock',
+    template: '%s · Deract',
   },
   description:
     'Watch the match late and still watch it with your friends. Every reaction lands at the moment it happened in the game, never before.',
-  applicationName: 'Delayed Reaction',
+  applicationName: 'Deract',
 };
 
 export const viewport: Viewport = {

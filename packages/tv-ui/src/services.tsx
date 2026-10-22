@@ -2,7 +2,7 @@ import { ApiClient, SessionStore, type KeyValueStorage } from '@delayed-reaction
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
 
 export interface TvConfig {
-  /** Base URL of the Delayed Reaction API. */
+  /** Base URL of the Deract API. */
   readonly apiUrl: string;
   /** Base URL of the phone companion, encoded in the room QR code. */
   readonly webUrl: string;

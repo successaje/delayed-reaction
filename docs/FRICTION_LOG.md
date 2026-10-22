@@ -1,6 +1,6 @@
 # Friction log
 
-Developer-experience problems we hit while building Delayed Reaction for Fire TV (Vega OS). Each entry records what we tried, what happened, how long it cost us, and what would have helped. Entries are in the order we hit them.
+Developer-experience problems we hit while building Deract for Fire TV (Vega OS). Each entry records what we tried, what happened, how long it cost us, and what would have helped. Entries are in the order we hit them.
 
 Severity:
 - **High**: blocked progress.

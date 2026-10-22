@@ -1,4 +1,4 @@
-/** The slice of a media player Delayed Reaction needs: a clock and transport controls. */
+/** The slice of a media player Deract needs: a clock and transport controls. */
 export interface MediaController {
   currentTimeMs(): number;
   durationMs(): number;

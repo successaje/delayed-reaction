@@ -60,7 +60,7 @@ export function Moments({
       setSharing(null);
     }
     if (typeof navigator.share === 'function') {
-      await navigator.share({ title: 'Delayed Reaction', text: 'This moment.', url }).catch(() => undefined);
+      await navigator.share({ title: 'Deract', text: 'This moment.', url }).catch(() => undefined);
       return;
     }
     try {

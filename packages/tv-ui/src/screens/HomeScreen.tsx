@@ -35,7 +35,7 @@ export function HomeScreen({
   if (catalog.status === 'error') {
     return (
       <Screen>
-        <Message title="Can't reach Delayed Reaction" detail={catalog.message}>
+        <Message title="Can't reach Deract" detail={catalog.message}>
           <DefaultFocus>
             <TvButton label="Try again" onSelect={catalog.retry} />
           </DefaultFocus>

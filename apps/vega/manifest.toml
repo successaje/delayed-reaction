@@ -1,8 +1,8 @@
-# Delayed Reaction for Fire TV (Vega OS).
+# Deract for Fire TV (Vega OS).
 schema-version = 1
 
 [package]
-title = "Delayed Reaction"
+title = "Deract"
 version = "0.1.0"
 id = "com.successaje.delayedreaction"
 icon = "@image/app_icon"
