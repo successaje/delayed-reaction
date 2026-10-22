@@ -12,5 +12,5 @@ const app = createApp({
 });
 
 serve({ fetch: app.fetch, port: config.port }, ({ port }) => {
-  console.log(`Delayed Reaction API listening on http://localhost:${port}`);
+  console.log(`Deract API listening on http://localhost:${port}`);
 });

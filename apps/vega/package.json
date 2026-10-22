@@ -2,7 +2,7 @@
   "name": "@delayed-reaction/vega",
   "version": "0.1.0",
   "private": true,
-  "description": "Delayed Reaction for Fire TV on Vega OS.",
+  "description": "Deract for Fire TV on Vega OS.",
   "scripts": {
     "start": "react-native start",
     "build": "react-native build-kepler --build-type Release",

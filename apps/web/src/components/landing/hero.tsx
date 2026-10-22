@@ -17,7 +17,7 @@ export function Hero() {
             <span className="text-amber">Watch it together.</span>
           </h1>
           <p className="mt-6 max-w-lg text-base text-chalk-2 sm:text-lg sm:leading-8">
-            Delayed Reaction pins your group chat to the game clock. Friends react live; you press play
+            Deract pins your group chat to the game clock. Friends react live; you press play
             an hour later and every reaction lands on the exact moment it happened, never before.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-3">

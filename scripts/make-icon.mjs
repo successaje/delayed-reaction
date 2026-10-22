@@ -1,4 +1,4 @@
-// Draws the Delayed Reaction mark (two offset bars: the same moment on two timelines) as a
+// Draws the Deract mark (two offset bars: the same moment on two timelines) as a
 // PNG, with no dependencies. Used for the Vega app icon.
 //
 //   node scripts/make-icon.mjs <size> <out.png>
