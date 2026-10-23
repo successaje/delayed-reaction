@@ -5,10 +5,13 @@
 [![CI](https://github.com/successaje/delayed-reaction/actions/workflows/ci.yml/badge.svg)](https://github.com/successaje/delayed-reaction/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-ffb547.svg)](LICENSE)
 [![Live demo](https://img.shields.io/badge/live-delayed--reaction.vercel.app-0a0c0b.svg)](https://delayed-reaction.vercel.app)
+[![Demo video](https://img.shields.io/badge/demo-YouTube-ff0000.svg)](https://youtu.be/p7-DKxAX30M)
 ![Fire TV](https://img.shields.io/badge/Fire%20TV-Vega%20OS-ff9900.svg)
 ![AWS](https://img.shields.io/badge/AWS-Lambda%20·%20DynamoDB%20·%20CloudFront-232f3e.svg)
 
-![Deract: watch it late, watch it together](docs/media/01-cover.jpg)
+[![Watch the 2-minute Deract demo](https://img.youtube.com/vi/p7-DKxAX30M/maxresdefault.jpg)](https://youtu.be/p7-DKxAX30M)
+
+**▶ [Watch the 2-minute demo](https://youtu.be/p7-DKxAX30M)**
 
 Watch the match an hour late and still watch it with your friends. Deract (short for *delayed reaction*) pins every reaction to the **match clock** instead of the wall clock, so it reaches each person at the moment it happened in the game, and never before.
 
@@ -16,7 +19,7 @@ It's a **Fire TV app (Vega OS)**, a **phone companion** that works in any browse
 
 > Built for Amazon's *Build, Ship, Shape* hackathon, Fire TV track.
 >
-> **Live:** https://delayed-reaction.vercel.app · **Friction log:** [docs/FRICTION_LOG.md](docs/FRICTION_LOG.md)
+> **Demo video:** https://youtu.be/p7-DKxAX30M · **Live:** https://delayed-reaction.vercel.app · **Friction log:** [docs/FRICTION_LOG.md](docs/FRICTION_LOG.md)
 
 ---
 
