@@ -69,9 +69,19 @@ The interesting problem wasn't real-time chat. It was making *time* a first-clas
 
 ## What's next
 
+### Alexa: the whole group, talking to one clock
+
+Deract is made for voice. At the big moment nobody wants to reach for a phone; you just shout at the TV.
+
+- **"Alexa, NOOO."** Alexa hears it on your Fire TV, and Deract pins it to the exact match position on *your* TV's clock. Every friend gets it at that same moment in their own match, whether they're watching live or two hours later.
+- **Everyone talks to Alexa in their own living room, at their own time, and it all lines up.** Five friends, five cities, five different start times: one shared match, because every voice is stamped with the game clock, not the wall clock.
+- **Alexa+ as the group's memory, spoiler-safe.** "Alexa, what did everyone say about that penalty?" only answers from what you've already watched. "Alexa, who called it?" waits until your own full time.
+- **It already listens.** Today "Alexa, pause" and "Alexa, rewind" move Deract's match clock through Vega Media Controls, so the reactions follow. Voice reactions are the next step on the same clock.
+
+### Also next
+
 - An SDK for Vega sports apps, so asynchronous co-watching lives inside the broadcaster's own player.
 - Official game-clock sync from sports data.
-- Voice reactions through Alexa.
 
 ## Product feedback
 
